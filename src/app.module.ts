@@ -17,6 +17,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
       database: process.env.POSTGRES_DB,
       // sync: {alter:true},              /// auto-sync with database
       models: [
+
       ],
       autoLoadModels: true,
     }),
