@@ -26,5 +26,6 @@ async function bootstrap() {
 
   /// test
   /// dddd
+  /// test2
 }
 bootstrap();
