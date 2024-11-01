@@ -4,6 +4,8 @@ import {ConfigModule} from "@nestjs/config";
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ServiceModule } from './service/service.module';
 import {ServiceModel} from "./service/service.model";
+import { DiagnosesModule } from './diagnoses/diagnoses.module';
+import {DiagnosesModel} from "./diagnoses/diagnoses.model";
 
 @Module({
   imports: [
@@ -20,10 +22,12 @@ import {ServiceModel} from "./service/service.model";
       // sync: {alter:true},              /// auto-sync with database
       models: [
           ServiceModel,
+          DiagnosesModel,
       ],
       autoLoadModels: true,
     }),
     ServiceModule,
+    DiagnosesModule,
   ],
   controllers: [],
   providers: [],

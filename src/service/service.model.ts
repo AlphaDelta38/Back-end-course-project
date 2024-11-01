@@ -19,7 +19,7 @@ export class ServiceModel extends Model<ServiceModel, serviceInterface>{
     id:number
 
     @ApiProperty({example: "appointment of doctor", description: "name of action, or service name"})
-    @Column({type: DataType.STRING, unique:true})
+    @Column({type: DataType.STRING, unique:true, allowNull: false})
     service: string
 
 
