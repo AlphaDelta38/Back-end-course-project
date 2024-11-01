@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import * as process from "process";
 import {ConfigModule} from "@nestjs/config";
 import { SequelizeModule } from '@nestjs/sequelize';
+import { ServiceModule } from './service/service.module';
+import {ServiceModel} from "./service/service.model";
 
 @Module({
   imports: [
@@ -17,9 +19,11 @@ import { SequelizeModule } from '@nestjs/sequelize';
       database: process.env.POSTGRES_DB,
       // sync: {alter:true},              /// auto-sync with database
       models: [
+          ServiceModel,
       ],
       autoLoadModels: true,
     }),
+    ServiceModule,
   ],
   controllers: [],
   providers: [],
