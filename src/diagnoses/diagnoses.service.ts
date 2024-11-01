@@ -47,5 +47,13 @@ export class DiagnosesService {
     }
 
 
+    async updateDiagnosis(dto: DiagnosesDto){
+        try {
+            return await this.diagnosesRepository.update(dto,{where: {id: dto.id}})
+        }catch (e){
+            throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }

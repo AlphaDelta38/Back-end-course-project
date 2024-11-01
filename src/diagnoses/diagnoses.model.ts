@@ -1,7 +1,8 @@
 
-import {Model} from "sequelize-typescript";
+import {BelongsTo, HasOne, Model} from "sequelize-typescript";
 import {Column, DataType, Table} from "sequelize-typescript";
 import {ApiProperty} from "@nestjs/swagger";
+import {AppointmentsModel} from "../appointments/appointments.model";
 
 
 
@@ -35,6 +36,10 @@ export class DiagnosesModel extends Model<DiagnosesModel, diagnosesInterface>{
     @ApiProperty({example: "Paracetamol, Ibuprophen", description: "destinations for treatments of diagnosis "})
     @Column({type: DataType.STRING, allowNull:false})
     prescription: string
+
+
+    @HasOne(()=>AppointmentsModel, {foreignKey:"diagnosis_id"})
+    appointment: AppointmentsModel
 
 
 }

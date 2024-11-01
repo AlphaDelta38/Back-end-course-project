@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put} from '@nestjs/common';
 import {DiagnosesService} from "./diagnoses.service";
 import {ApiBody, ApiOperation, ApiResponse} from "@nestjs/swagger";
 import {DiagnosesDto} from "./dto/diagnoses.dto";
@@ -68,6 +68,22 @@ export class DiagnosesController {
                 throw new HttpException({message: "id not number"}, HttpStatus.BAD_REQUEST)
             }
             return await this.diagnosesService.deleteDiagnosis(diagnosis_id)
+        }catch (e){
+            throw new HttpException({message: e}, HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    @ApiOperation({ summary: 'update one of diangosis' })
+    @ApiResponse({ status: 201, description: 'Diagnosss successfully updated' })
+    @ApiResponse({ status: 400, description: 'Bad request' })
+    @Put()
+    @ApiBody({ type: Number })
+    async update(@Body() dto: DiagnosesDto){
+        try {
+            if(!dto.id){
+                throw new HttpException({message: "id has not got for update"}, HttpStatus.BAD_REQUEST)
+            }
+            return await this.diagnosesService.updateDiagnosis(dto)
         }catch (e){
             throw new HttpException({message: e}, HttpStatus.BAD_REQUEST)
         }

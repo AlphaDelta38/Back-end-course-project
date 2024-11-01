@@ -6,6 +6,8 @@ import { ServiceModule } from './service/service.module';
 import {ServiceModel} from "./service/service.model";
 import { DiagnosesModule } from './diagnoses/diagnoses.module';
 import {DiagnosesModel} from "./diagnoses/diagnoses.model";
+import { AppointmentsModule } from './appointments/appointments.module';
+import {AppointmentsModel} from "./appointments/appointments.model";
 
 @Module({
   imports: [
@@ -23,11 +25,13 @@ import {DiagnosesModel} from "./diagnoses/diagnoses.model";
       models: [
           ServiceModel,
           DiagnosesModel,
+          AppointmentsModel,
       ],
       autoLoadModels: true,
     }),
     ServiceModule,
     DiagnosesModule,
+    AppointmentsModule,
   ],
   controllers: [],
   providers: [],

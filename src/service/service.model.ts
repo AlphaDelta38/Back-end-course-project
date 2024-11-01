@@ -1,6 +1,7 @@
-import {Model} from "sequelize-typescript";
+import {BelongsTo, HasMany, Model} from "sequelize-typescript";
 import {Column, DataType, Table} from "sequelize-typescript";
 import {ApiProperty} from "@nestjs/swagger";
+import {AppointmentsModel} from "../appointments/appointments.model";
 
 
 
@@ -22,5 +23,7 @@ export class ServiceModel extends Model<ServiceModel, serviceInterface>{
     @Column({type: DataType.STRING, unique:true, allowNull: false})
     service: string
 
+    @HasMany(()=>AppointmentsModel, {foreignKey:"service_id"})
+    appointments: AppointmentsModel
 
 }
