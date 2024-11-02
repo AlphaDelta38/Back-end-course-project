@@ -1,9 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class DiagnosesDto {
-    @ApiProperty({example: 1, description:"Unique Diagnoses id. "})
-    id: number
-
+export class CreateDiagnosesDto {
     @ApiProperty({ example: "Hypertension", description: "Patient's diagnosis." })
     diagnosis: string;
 

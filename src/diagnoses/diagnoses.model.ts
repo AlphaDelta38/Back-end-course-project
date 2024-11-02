@@ -1,45 +1,33 @@
+import { ApiProperty } from "@nestjs/swagger";
+import { AppointmentsModel } from "../appointments/appointments.model";
+import { Column, DataType, Table, HasOne, Model } from "sequelize-typescript";
 
-import {BelongsTo, HasOne, Model} from "sequelize-typescript";
-import {Column, DataType, Table} from "sequelize-typescript";
-import {ApiProperty} from "@nestjs/swagger";
-import {AppointmentsModel} from "../appointments/appointments.model";
-
-
-
-
-
-
-interface diagnosesInterface{
-    id:number,
-    diagnosis: string
-    notes?: string
-    prescription: string
+interface DiagnosesInterface {
+    id: number;
+    diagnosis: string;
+    notes?: string;
+    prescription: string;
 }
 
+@Table({ tableName: 'diagnoses', createdAt: true, updatedAt: false })
+export class DiagnosesModel extends Model<DiagnosesModel, DiagnosesInterface> {
+    
+    @ApiProperty({ example: 1, description: "Unique Diagnosis id." })
+    @Column({ type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true })
+    id: number;
 
-@Table({tableName:'diagnoses', createdAt:true, updatedAt: false})
-export class DiagnosesModel extends Model<DiagnosesModel, diagnosesInterface>{
+    @ApiProperty({ example: "Hypertension", description: "Diagnosis for the patient" })
+    @Column({ type: DataType.STRING, allowNull: false })
+    diagnosis: string;
 
+    @ApiProperty({ example: "Take medication twice daily", description: "Additional notes for treatment" })
+    @Column({ type: DataType.STRING, allowNull: true })
+    notes: string;
 
-    @ApiProperty({example: 1, description: " unique key of service"})
-    @Column({type: DataType.INTEGER, unique: true , autoIncrement: true, primaryKey: true} )
-    id:number
+    @ApiProperty({ example: "Paracetamol, Ibuprofen", description: "Prescription details for the diagnosis" })
+    @Column({ type: DataType.STRING, allowNull: false })
+    prescription: string;
 
-    @ApiProperty({example: "Speed", description: "diagnoses of patients"})
-    @Column({type: DataType.STRING,  allowNull:false})
-    diagnosis: string
-
-    @ApiProperty({example: "drink two tablet on day", description: "notes for treatments"})
-    @Column({type: DataType.STRING,  allowNull:true})
-    notes: string
-
-    @ApiProperty({example: "Paracetamol, Ibuprophen", description: "destinations for treatments of diagnosis "})
-    @Column({type: DataType.STRING, allowNull:false})
-    prescription: string
-
-
-    @HasOne(()=>AppointmentsModel, {foreignKey:"diagnosis_id"})
-    appointment: AppointmentsModel
-
-
+    @HasOne(() => AppointmentsModel, { foreignKey: "diagnosis_id" })
+    appointment: AppointmentsModel;
 }

@@ -1,16 +1,14 @@
 import { Module } from '@nestjs/common';
+import { SequelizeModule} from "@nestjs/sequelize";
 import { AppointmentsService } from './appointments.service';
 import { AppointmentsController } from './appointments.controller';
-import {SequelizeModule} from "@nestjs/sequelize";
-import {AppointmentsModel} from "./appointments.model";
+import { AppointmentsModel } from "./appointments.model";
 
 @Module({
-  imports: [
-      SequelizeModule.forFeature([
-          AppointmentsModel
-      ]),
-  ],
   providers: [AppointmentsService],
-  controllers: [AppointmentsController]
+  controllers: [AppointmentsController],
+  imports: [
+    SequelizeModule.forFeature([AppointmentsModel])
+  ]
 })
 export class AppointmentsModule {}

@@ -1,7 +1,7 @@
-import {ApiProperty} from "@nestjs/swagger";
+import { ApiProperty } from "@nestjs/swagger";
 
 
 export class ServiceDto {
-    @ApiProperty({example: "appointment", description:"name of service"})
+    @ApiProperty({example: "blood test", description:"Service name."})
     readonly service: string
 }

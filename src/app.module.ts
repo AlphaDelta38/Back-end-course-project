@@ -1,13 +1,18 @@
 import { Module } from '@nestjs/common';
 import * as process from "process";
-import {ConfigModule} from "@nestjs/config";
+import { ConfigModule } from "@nestjs/config";
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ServiceModule } from './service/service.module';
-import {ServiceModel} from "./service/service.model";
+import { ServiceModel } from "./service/service.model";
 import { DiagnosesModule } from './diagnoses/diagnoses.module';
-import {DiagnosesModel} from "./diagnoses/diagnoses.model";
+import { DiagnosesModel } from "./diagnoses/diagnoses.model";
 import { AppointmentsModule } from './appointments/appointments.module';
-import {AppointmentsModel} from "./appointments/appointments.model";
+import { AppointmentsModel } from "./appointments/appointments.model";
+import { PatientsModule } from './patients/patients.module';
+import { PatientModel } from './patients/patients.model';
+import { NewsModule } from './news/news.module';
+import { NewsModel } from './news/news.model';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -26,12 +31,17 @@ import {AppointmentsModel} from "./appointments/appointments.model";
           ServiceModel,
           DiagnosesModel,
           AppointmentsModel,
+          PatientModel,
+          NewsModel,
       ],
       autoLoadModels: true,
     }),
     ServiceModule,
     DiagnosesModule,
     AppointmentsModule,
+    PatientsModule,
+    NewsModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

@@ -1,102 +1,71 @@
-import {Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query} from '@nestjs/common';
-import {AppointmentsService} from "./appointments.service";
-import {ApiBody, ApiOperation, ApiResponse} from "@nestjs/swagger";
-import {AppointmentDto} from "./dto/appointments.dto";
-import {getAllAppointmentsDto} from "./dto/getAllAppointments.dto";
-import {isNumber} from "@nestjs/common/utils/shared.utils";
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { isNumber } from "@nestjs/common/utils/shared.utils";
+import { AppointmentsService } from "./appointments.service";
+import { AppointmentDto } from "./dto/appointments.dto";
+import { GetAppointmentsDto } from "./dto/getAppointments.dto";
 
 @Controller('appointments')
 export class AppointmentsController {
+    constructor(private appointmentsService: AppointmentsService) {}
 
-    constructor(private appointmentsService: AppointmentsService) {
-    }
-
-
-    @ApiOperation({ summary: 'Create a new appointments' })
-    @ApiResponse({ status: 201, description: 'appointments successfully created.' })
+    @ApiOperation({ summary: 'Create a new appointment' })
+    @ApiResponse({ status: 201, description: 'Appointment successfully created.' })
     @ApiResponse({ status: 400, description: 'Bad request' })
     @Post()
     @ApiBody({ type: AppointmentDto })
-    async create(@Body() dto: AppointmentDto){
-        try {
-            if(!dto.doctor_id || !dto.patient_id){
-                throw new HttpException({message: "bad request doctor id or patient id has not been got"}, HttpStatus.BAD_REQUEST)
-            }
-            return await this.appointmentsService.createAppointment(dto)
-        }catch (e){
-            throw new HttpException({message: e}, HttpStatus.BAD_REQUEST)
+    async create(@Body() dto: AppointmentDto) {
+        if (!dto.doctor_id || !dto.patient_id) {
+            throw new HttpException({ message: "Doctor ID or Patient ID is required." }, HttpStatus.BAD_REQUEST);
         }
+        return await this.appointmentsService.createAppointment(dto);
     }
 
-
-    @ApiOperation({ summary: 'get all the appointments of pattient or doctors, ' })
-    @ApiResponse({ status: 201, description: 'appointments successfully sent.' })
+    @ApiOperation({ summary: 'Get all appointments for a patient or doctor' })
+    @ApiResponse({ status: 200, description: 'Appointments successfully retrieved.' })
     @ApiResponse({ status: 400, description: 'Bad request' })
     @Get()
-    @ApiBody({ type: getAllAppointmentsDto })
-    async getAll(@Query() dto: getAllAppointmentsDto){
-        try {
-            if(dto.type && !dto.id){
-                throw new HttpException({message: "id has not been found"}, HttpStatus.BAD_REQUEST)
-            }else if(!dto.type && dto.id){
-                throw new HttpException({message: "type has of entity has not been found"}, HttpStatus.BAD_REQUEST)
-            }
-            return await this.appointmentsService.getAllAppointments(dto)
-        }catch (e){
-            throw new HttpException({message: e}, HttpStatus.BAD_REQUEST)
+    @ApiBody({ type: GetAppointmentsDto })
+    async getAll(@Query() dto: GetAppointmentsDto) {
+        if (dto.type && !dto.id) {
+            throw new HttpException({ message: "ID is required when type is specified." }, HttpStatus.BAD_REQUEST);
+        } else if (!dto.type && dto.id) {
+            throw new HttpException({ message: "Type of entity is required when ID is specified." }, HttpStatus.BAD_REQUEST);
         }
+        return await this.appointmentsService.getAllAppointments(dto);
     }
 
-
-    @ApiOperation({ summary: 'get one of  the appointments  ' })
-    @ApiResponse({ status: 201, description: 'appointments successfully sent.' })
+    @ApiOperation({ summary: 'Get a specific appointment' })
+    @ApiResponse({ status: 200, description: 'Appointment successfully retrieved.' })
     @ApiResponse({ status: 400, description: 'Bad request' })
     @Get("/:id")
-    async getOne(@Param("id") appointment_id:number){
-        try {
-            if(!isNumber(Number(appointment_id))){
-                throw new HttpException({message: "id is not number"}, HttpStatus.BAD_REQUEST)
-            }
-            return await this.appointmentsService.getOneAppointment(appointment_id)
-        }catch (e){
-            throw new HttpException({message: e}, HttpStatus.BAD_REQUEST)
+    async getOne(@Param("id") appointment_id: number) {
+        if (!isNumber(appointment_id)) {
+            throw new HttpException({ message: "Appointment ID must be a number." }, HttpStatus.BAD_REQUEST);
         }
+        return await this.appointmentsService.getOneAppointment(appointment_id);
     }
 
-    @ApiOperation({ summary: 'delete one of  the appointments  ' })
-    @ApiResponse({ status: 201, description: 'appointments successfully deleted.' })
+    @ApiOperation({ summary: 'Delete a specific appointment' })
+    @ApiResponse({ status: 200, description: 'Appointment successfully deleted.' })
     @ApiResponse({ status: 400, description: 'Bad request' })
     @Delete("/:id")
-    async delete(@Param("id") appointment_id:number){
-        try {
-            if(!isNumber(Number(appointment_id))){
-                throw new HttpException({message: "id is not number"}, HttpStatus.BAD_REQUEST)
-            }
-            return await this.appointmentsService.deleteAppointment(appointment_id)
-        }catch (e){
-            throw new HttpException({message: e}, HttpStatus.BAD_REQUEST)
+    async delete(@Param("id") appointment_id: number) {
+        if (!isNumber(appointment_id)) {
+            throw new HttpException({ message: "Appointment ID must be a number." }, HttpStatus.BAD_REQUEST);
         }
+        return await this.appointmentsService.deleteAppointment(appointment_id);
     }
 
-    @ApiOperation({ summary: 'update one of  the appointments  ' })
-    @ApiResponse({ status: 201, description: 'appointments successfully updated.' })
+    @ApiOperation({ summary: 'Update a specific appointment' })
+    @ApiResponse({ status: 200, description: 'Appointment successfully updated.' })
     @ApiResponse({ status: 400, description: 'Bad request' })
     @Put()
     @ApiBody({ type: AppointmentDto })
-    async update(@Body() dto: AppointmentDto){
-        try {
-            if(!dto.id){
-                throw new HttpException({message: "id appointments has no been got"}, HttpStatus.BAD_REQUEST)
-            }
-            return await this.appointmentsService.updateAppointment(dto)
-        }catch (e){
-            throw new HttpException({message: e}, HttpStatus.BAD_REQUEST)
+    async update(@Body() dto: AppointmentDto) {
+        if (!dto.id) {
+            throw new HttpException({ message: "Appointment ID is required." }, HttpStatus.BAD_REQUEST);
         }
+        return await this.appointmentsService.updateAppointment(dto);
     }
-
-
-
-
-
-
 }
