@@ -2,6 +2,7 @@ import { BelongsTo, Model, Column, DataType, Table } from "sequelize-typescript"
 import { ApiProperty } from "@nestjs/swagger";
 import { ServiceModel } from "../service/service.model";
 import { DiagnosesModel } from "../diagnoses/diagnoses.model";
+import {PatientModel} from "../patients/patients.model";
 
 interface AppointmentsInterface {
     id: number;
@@ -49,4 +50,8 @@ export class AppointmentsModel extends Model<AppointmentsModel, AppointmentsInte
 
     @BelongsTo(() => DiagnosesModel, { foreignKey: "diagnosis_id" })
     diagnosis: DiagnosesModel;
+
+    @BelongsTo(() => PatientModel, { foreignKey: "patient_id" })
+    patient: PatientModel;
+
 }

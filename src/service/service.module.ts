@@ -9,6 +9,9 @@ import { ServiceModel } from "./service.model";
   controllers: [ServiceController],
   imports: [
     SequelizeModule.forFeature([ServiceModel])
+  ],
+  exports: [
+      ServiceService,
   ]
 })
 export class ServiceModule {}

@@ -3,13 +3,27 @@ import { InjectModel } from "@nestjs/sequelize";
 import { AppointmentsModel } from "./appointments.model";
 import { AppointmentDto } from "./dto/appointments.dto";
 import { GetAppointmentsDto } from "./dto/getAppointments.dto";
+import {PatientsService} from "../patients/patients.service";
+import {ServiceService} from "../service/service.service";
 
 @Injectable()
 export class AppointmentsService {
-    constructor(@InjectModel(AppointmentsModel) private appointmentsRepository: typeof AppointmentsModel) {}
+    constructor(
+        @InjectModel(AppointmentsModel) private appointmentsRepository: typeof AppointmentsModel,
+        private patientsService : PatientsService,
+        private serviceService: ServiceService,
+    ){}
 
     async createAppointment(dto: AppointmentDto) {
         try {
+            const patient = this.patientsService.getOnePatient(dto.patient_id);
+            const service = this.serviceService.getOneService(dto.service_id);
+            if(!patient){
+                throw new HttpException({ message: "patient not found" }, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            if(!service){
+                throw new HttpException({ message: "service not found" }, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
             return await this.appointmentsRepository.create(dto);
         } catch (e) {
             throw new HttpException({ message: e }, HttpStatus.INTERNAL_SERVER_ERROR);
