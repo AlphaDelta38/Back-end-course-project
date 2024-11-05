@@ -21,7 +21,7 @@ export class PatientsService {
 
     async getAllPatients(){
         try {
-            return await this.patientsRepository.findAll();
+            return await this.patientsRepository.findAll({attributes: {exclude: ["password"]}});
         }catch (e){
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -29,7 +29,7 @@ export class PatientsService {
 
     async getOnePatient(patient_id:number){
         try {
-          const patient = await this.patientsRepository.findByPk(patient_id);
+          const patient = await this.patientsRepository.findByPk(patient_id, {attributes: {exclude: ["password"]}});
           if(!patient){
               throw new HttpException({message: "Patient not found."}, HttpStatus.INTERNAL_SERVER_ERROR);
           }

@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
+import {Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseGuards} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { isNumber } from "@nestjs/common/utils/shared.utils";
 import { PatientsService } from "./patients.service";
 import { CreatePatientDto } from "./dto/create-patient.dto";
 import { PatientDto } from "./dto/patient.dto";
+import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 
 @Controller('patients')
 export class PatientsController {
@@ -29,6 +30,7 @@ export class PatientsController {
     @ApiOperation({ summary: 'Retrieve all patients' })
     @ApiResponse({ status: 200, description: 'Patients retrieved successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
+    @UseGuards(JwtAuthGuard)
     @Get()
     async getAll() {
         try {

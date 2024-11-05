@@ -3,6 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { ServiceModel } from "../service/service.model";
 import { DiagnosesModel } from "../diagnoses/diagnoses.model";
 import {PatientModel} from "../patients/patients.model";
+import {DoctorModel} from "../doctors/doctors.model";
 
 interface AppointmentsInterface {
     id: number;
@@ -34,7 +35,7 @@ export class AppointmentsModel extends Model<AppointmentsModel, AppointmentsInte
     service_id: number;
 
     @ApiProperty({ example: 2, description: "Diagnosis ID associated with this appointment" })
-    @Column({ type: DataType.INTEGER, allowNull: false })
+    @Column({ type: DataType.INTEGER, allowNull: true })
     diagnosis_id: number;
 
     @ApiProperty({ example: "2022-04-22", description: "Date of the appointment" })
@@ -53,5 +54,8 @@ export class AppointmentsModel extends Model<AppointmentsModel, AppointmentsInte
 
     @BelongsTo(() => PatientModel, { foreignKey: "patient_id" })
     patient: PatientModel;
+
+    @BelongsTo(() => DoctorModel, { foreignKey: "doctor_id" })
+    doctor: DoctorModel;
 
 }

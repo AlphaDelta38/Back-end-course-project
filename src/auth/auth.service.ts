@@ -4,8 +4,7 @@ import { CreatePatientDto } from 'src/patients/dto/create-patient.dto';
 import { LoginPatientDto } from 'src/patients/dto/login-patient.dto';
 import { PatientModel } from 'src/patients/patients.model';
 import { PatientsService } from 'src/patients/patients.service';
-
-const bcrypt = require('bcrypt');
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +13,18 @@ export class AuthService {
                 private jwtService: JwtService) {}
 
     private async generateToken(patient: PatientModel) {
-        const payload = {id: patient.id, first_name: patient.first_name, email: patient.email}
+        const payload = {
+            id: patient.id,
+            email: patient.email,
+            first_name: patient.first_name,
+            last_name: patient.last_name,
+            date_of_birth: patient.date_of_birth,
+            gender: patient.gender,
+            phone: patient.phone,
+            address: patient.address,
+            insurance_number: patient.insurance_number,
+            createdAt: patient.createdAt,
+        };
         return {
             token: this.jwtService.sign(payload)
         }
@@ -26,7 +36,6 @@ export class AuthService {
         if (!patient) {
             throw new UnauthorizedException({ message: 'Patient not found.' });
         }
-    
         const passwordEquals = await bcrypt.compare(patientDto.password, patient.password);
         
         if (passwordEquals) {

@@ -15,6 +15,9 @@ import { NewsModel } from './news/news.model';
 import { AuthModule } from './auth/auth.module';
 import { DoctorsModule } from './doctors/doctors.module';
 import { DoctorModel } from './doctors/doctors.model';
+import { RolesModule } from './roles/roles.module';
+import {DoctorRolesModel} from "./roles/doctor-role.model";
+import {RolesModel} from "./roles/roles.model";
 
 @Module({
   imports: [
@@ -36,6 +39,8 @@ import { DoctorModel } from './doctors/doctors.model';
           PatientModel,
           NewsModel,
           DoctorModel,
+          RolesModel,
+          DoctorRolesModel,
 
       ],
       autoLoadModels: true,
@@ -47,6 +52,7 @@ import { DoctorModel } from './doctors/doctors.model';
     NewsModule,
     AuthModule,
     DoctorsModule,
+    RolesModule,
   ],
   controllers: [],
   providers: [],

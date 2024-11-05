@@ -4,11 +4,17 @@ import { isNumber } from "@nestjs/common/utils/shared.utils";
 import { DoctorsService } from "./doctors.service";
 import { CreateDoctorDto } from "./dto/create-doctor.dto";
 import { DoctorDto } from "./dto/doctor.dto";
+import {setDoctorRolesDto} from "./dto/setDoctorRoles.dto";
 
 @Controller('doctors')
 export class DoctorsController {
 
     constructor(private doctorsService: DoctorsService) {}
+
+
+
+
+
 
     @ApiOperation({ summary: 'Create a new doctor' })
     @ApiResponse({ status: 201, description: 'Doctor created successfully.' })
@@ -83,4 +89,22 @@ export class DoctorsController {
             throw new HttpException({ message: e.message || "Failed to update doctor." }, HttpStatus.BAD_REQUEST);
         }
     }
+
+
+    @ApiOperation({ summary: 'set roles for  doctor ' })
+    @ApiResponse({ status: 200, description: 'Doctor role successfully set.' })
+    @ApiResponse({ status: 400, description: 'Invalid request.' })
+    @Post("/roles")
+    @ApiBody({ type: setDoctorRolesDto })
+    async setDoctorRole(@Body() dto: setDoctorRolesDto) {
+        try {
+            if (!dto.doctor_id || dto.roles_id.length === 0) {
+                throw new HttpException({ message: "roles id or doctor id not arrived" }, HttpStatus.BAD_REQUEST);
+            }
+            return await this.doctorsService.setDoctorRoles(dto);
+        } catch (e) {
+            throw new HttpException({ message: e.message || "Failed to update doctor." }, HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
