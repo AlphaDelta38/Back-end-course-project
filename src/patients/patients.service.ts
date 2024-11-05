@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from "@nestjs/sequelize";
 import { PatientModel  } from "./patients.model";
-import { CreatePatientDto } from "./dto/create-patients.dto";
-import { PatientDto } from "./dto/patients.dto";
+import { CreatePatientDto } from "./dto/create-patient.dto";
+import { PatientDto } from "./dto/patient.dto";
 
 
 @Injectable()

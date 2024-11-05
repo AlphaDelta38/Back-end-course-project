@@ -18,7 +18,7 @@ interface PatientInterface {
 @Table({ tableName: 'patients', createdAt: true, updatedAt: true })
 export class PatientModel extends Model<PatientModel, PatientInterface> {
     
-    @ApiProperty({ example: '1', description: 'Unique Patient id.' })
+    @ApiProperty({ example: '1', description: 'Unique Patient id.s' })
     @Column({ type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true })
     id: number;
 

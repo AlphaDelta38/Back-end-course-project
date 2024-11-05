@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { CreatePatientDto } from 'src/patients/dto/create-patients.dto';
-import { LoginPatientDto } from 'src/patients/dto/login-patients.dto';
+import { CreatePatientDto } from 'src/patients/dto/create-patient.dto';
+import { LoginPatientDto } from 'src/patients/dto/login-patient.dto';
 import { PatientModel } from 'src/patients/patients.model';
 import { PatientsService } from 'src/patients/patients.service';
 

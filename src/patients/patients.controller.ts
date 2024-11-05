@@ -2,8 +2,8 @@ import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, 
 import { ApiBody, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { isNumber } from "@nestjs/common/utils/shared.utils";
 import { PatientsService } from "./patients.service";
-import { CreatePatientDto } from "./dto/create-patients.dto";
-import { PatientDto } from "./dto/patients.dto";
+import { CreatePatientDto } from "./dto/create-patient.dto";
+import { PatientDto } from "./dto/patient.dto";
 
 @Controller('patients')
 export class PatientsController {
@@ -17,8 +17,8 @@ export class PatientsController {
     @ApiBody({ type: CreatePatientDto })
     async create(@Body() dto: CreatePatientDto) {
         try {
-            if (!dto.first_name || !dto.last_name || !dto.date_of_birth || !dto.gender || !dto.email) {
-                throw new HttpException({ message: "Required fields: first_name, last_name, date_of_birth, gender, email." }, HttpStatus.BAD_REQUEST);
+            if (!dto.first_name || !dto.last_name || !dto.date_of_birth || !dto.gender || !dto.email || dto.password) {
+                throw new HttpException({ message: "Required fields: first_name, last_name, date_of_birth, gender, email, password." }, HttpStatus.BAD_REQUEST);
             }
             return await this.patientsService.createPatient(dto);
         } catch (e) {

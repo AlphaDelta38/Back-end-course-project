@@ -13,6 +13,8 @@ import { PatientModel } from './patients/patients.model';
 import { NewsModule } from './news/news.module';
 import { NewsModel } from './news/news.model';
 import { AuthModule } from './auth/auth.module';
+import { DoctorsModule } from './doctors/doctors.module';
+import { DoctorModel } from './doctors/doctors.model';
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import { AuthModule } from './auth/auth.module';
           AppointmentsModel,
           PatientModel,
           NewsModel,
+          DoctorModel,
+
       ],
       autoLoadModels: true,
     }),
@@ -42,6 +46,7 @@ import { AuthModule } from './auth/auth.module';
     PatientsModule,
     NewsModule,
     AuthModule,
+    DoctorsModule,
   ],
   controllers: [],
   providers: [],
