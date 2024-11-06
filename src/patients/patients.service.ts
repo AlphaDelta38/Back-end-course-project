@@ -3,6 +3,7 @@ import { InjectModel } from "@nestjs/sequelize";
 import { PatientModel  } from "./patients.model";
 import { CreatePatientDto } from "./dto/create-patient.dto";
 import { PatientDto } from "./dto/patient.dto";
+import * as bcrypt from 'bcrypt';
 
 
 @Injectable()
@@ -13,7 +14,8 @@ export class PatientsService {
 
     async createPatient(dto: CreatePatientDto){
         try {
-            return await this.patientsRepository.create(dto);
+            const hashPassword =  await bcrypt.hash(dto.password, 5);
+            return await this.patientsRepository.create({...dto, password: hashPassword});
         }catch (e){
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
         }

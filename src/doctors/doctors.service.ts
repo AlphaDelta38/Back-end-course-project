@@ -6,6 +6,7 @@ import { DoctorDto } from "./dto/doctor.dto";
 import {setDoctorRolesDto} from "./dto/setDoctorRoles.dto";
 import {RolesService} from "../roles/roles.service";
 import {RolesModel} from "../roles/roles.model";
+import * as bcrypt from 'bcrypt';
 
 
 @Injectable()
@@ -20,7 +21,8 @@ export class DoctorsService {
             if(!role){
                 role = await this.roleService.createRole({role: "doctor"})
             }
-            const doctor = await this.doctorsRepository.create(dto);
+            const hashPassword =  await bcrypt.hash(dto.password, 5);
+            const doctor = await this.doctorsRepository.create({...dto, password: hashPassword});
             await this.setDoctorRoles({doctor_id: doctor.id, roles_id: [role.id]});
 
             return doctor;

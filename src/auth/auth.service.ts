@@ -1,53 +1,61 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreatePatientDto } from 'src/patients/dto/create-patient.dto';
-import { LoginPatientDto } from 'src/patients/dto/login-patient.dto';
 import { PatientModel } from 'src/patients/patients.model';
 import { PatientsService } from 'src/patients/patients.service';
+import { DoctorModel } from 'src/doctors/doctors.model';
+import { DoctorsService } from 'src/doctors/doctors.service';
+import { LoginUserDto } from 'src/dto/login-user.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
+    constructor(
+        private patientService: PatientsService,
+        private doctorService: DoctorsService,
+        private jwtService: JwtService
+    ) {}
 
-    constructor(private patientService: PatientsService,
-                private jwtService: JwtService) {}
-
-    private async generateToken(patient: PatientModel) {
+    private async generateToken(user: PatientModel | DoctorModel) {
         const payload = {
-            id: patient.id,
-            email: patient.email,
-            first_name: patient.first_name,
-            last_name: patient.last_name,
-            date_of_birth: patient.date_of_birth,
-            gender: patient.gender,
-            phone: patient.phone,
-            address: patient.address,
-            insurance_number: patient.insurance_number,
-            createdAt: patient.createdAt,
+            id: user.id,
+            email: user.email,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            date_of_birth: user.date_of_birth,
+            gender: user.gender,
+            phone: user.phone,
+            address: user.address,
+            ...(user instanceof PatientModel
+                ? { insurance_number: user.insurance_number }
+                : { office_number: user.office_number, speciality: user.speciality, image_link: user.image_link }),
+            createdAt: user.createdAt,
         };
+
         return {
             token: this.jwtService.sign(payload)
         }
     }
 
-    private async validatePatient(patientDto: LoginPatientDto) {
-        const patient = await this.patientService.getPatientByEmail(patientDto.email);
-        
-        if (!patient) {
-            throw new UnauthorizedException({ message: 'Patient not found.' });
-        }
-        const passwordEquals = await bcrypt.compare(patientDto.password, patient.password);
-        
-        if (passwordEquals) {
-            return patient;
-        }
-        
-        throw new UnauthorizedException({ message: 'Invalid password.' });
+    private async getUserByEmail(email: string, isPatient: boolean) {
+        return isPatient
+            ? await this.patientService.getPatientByEmail(email)
+            : await this.doctorService.getDoctorByEmail(email);
     }
 
-    async login(patientDto: LoginPatientDto) {
-        const patient = await this.validatePatient(patientDto)
-        return this.generateToken(patient)
+    private async validateUser(userDto: LoginUserDto) {
+        const user = await this.getUserByEmail(userDto.email, userDto.isPatient);
+        if (!user) throw new UnauthorizedException({ message: 'User not found.' });
+
+        const isPasswordValid = await bcrypt.compare(userDto.password, user.password);
+        if (!isPasswordValid) throw new UnauthorizedException({ message: 'Invalid password.' });
+
+        return user;
+    }
+
+    async login(userDto: LoginUserDto) {
+        const user = await this.validateUser(userDto)
+        return this.generateToken(user)
     }
 
     async registration(patientDto: CreatePatientDto) {
@@ -55,8 +63,7 @@ export class AuthService {
         if (candidate) {
             throw new HttpException({message: "Patient with this email exist."}, HttpStatus.BAD_REQUEST);
         }
-        const hashPassword =  await bcrypt.hash(patientDto.password, 5);
-        const patient = await this.patientService.createPatient({...patientDto, password: hashPassword})
-        return this.generateToken(patient)
+        const patient = await this.patientService.createPatient(patientDto);
+        return this.generateToken(patient);
     }
 }
