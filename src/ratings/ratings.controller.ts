@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { isNumber } from "@nestjs/common/utils/shared.utils";
 import { RatingsService } from "./ratings.service";
 import { CreateRatingDto } from "./dto/create-rating.dto";
@@ -28,11 +28,12 @@ export class RatingsController {
         }
     }
 
+    @Get()
     @ApiOperation({ summary: 'Get all ratings for a specific doctor or patient' })
     @ApiResponse({ status: 200, description: 'Ratings successfully retrieved.' })
     @ApiResponse({ status: 400, description: 'Bad request' })
-    @Get()
-    @ApiBody({ type: GetRatingsDto })
+    @ApiQuery({ name: 'type', required: false, description: 'Type of entity (doctor or patient)' })
+    @ApiQuery({ name: 'id', required: false, description: 'ID of the entity' })
     async getAll(@Query() dto: GetRatingsDto) {
         if (dto.type && !dto.id) {
             throw new HttpException({ message: "ID is required when type is specified." }, HttpStatus.BAD_REQUEST);
