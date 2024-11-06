@@ -18,6 +18,8 @@ import { DoctorModel } from './doctors/doctors.model';
 import { RolesModule } from './roles/roles.module';
 import {DoctorRolesModel} from "./roles/doctor-role.model";
 import {RolesModel} from "./roles/roles.model";
+import { RatingModel } from './ratings/ratings.model';
+import { RatingModule } from './ratings/ratings.module';
 
 @Module({
   imports: [
@@ -41,7 +43,7 @@ import {RolesModel} from "./roles/roles.model";
           DoctorModel,
           RolesModel,
           DoctorRolesModel,
-
+          RatingModel,
       ],
       autoLoadModels: true,
     }),
@@ -53,6 +55,7 @@ import {RolesModel} from "./roles/roles.model";
     AuthModule,
     DoctorsModule,
     RolesModule,
+    RatingModule,
   ],
   controllers: [],
   providers: [],

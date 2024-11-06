@@ -1,10 +1,11 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { isNumber } from "@nestjs/common/utils/shared.utils";
 import { NewsService } from "./news.service";
 import { CreateNewsDto } from "./dto/create-news.dto";
 import { NewsDto } from "./dto/news.dto";
 
+@ApiTags('News')
 @Controller('news')
 export class NewsController {
 
