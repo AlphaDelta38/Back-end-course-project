@@ -27,8 +27,8 @@ export class RatingsModel extends Model<RatingsModel, RatingsInterface> {
     @Column({type: DataType.INTEGER, allowNull: false })
     patient_id: number;
 
-    @ApiProperty({ example: 4.5, description: 'Rating given by the patient, between 0 and 5.' })
-    @Column({type: DataType.FLOAT, allowNull: false, validate: { min: 0, max: 5 } })
+    @ApiProperty({ example: 4, description: 'Rating given by the patient, between 0 and 5.' })
+    @Column({type: DataType.INTEGER, allowNull: false, validate: { min: 0, max: 5 } })
     rating: number;
 
     @BelongsTo(() => DoctorsModel, {foreignKey: 'doctor_id'})

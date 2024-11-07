@@ -12,7 +12,20 @@ export class RatingsService {
 
     async createRating(dto: CreateRatingsDto){
         try {
-            return await this.ratingsRepository.create(dto);
+            const raitignExist = await this.ratingsRepository.findOne({where: {patient_id: dto.patient_id, doctor_id: dto.doctor_id}});
+            if(raitignExist){
+                const raiting = await this.updateRating(
+                    {
+                        id: raitignExist.id,
+                        doctor_id: dto.doctor_id,
+                        patient_id: dto.patient_id,
+                        rating: dto.rating
+                        }
+                );
+                return  raiting;
+            }else{
+                return await this.ratingsRepository.create(dto);
+            }
         }catch (e){
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -60,7 +73,7 @@ export class RatingsService {
 
     async updateRating(dto: RatingsDto){
         try {
-            return await this.ratingsRepository.update(dto,{where: {id: dto.id}})
+            return await this.ratingsRepository.update(dto,{where: {id: dto.id}, returning: true})
         }catch (e){
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
         }

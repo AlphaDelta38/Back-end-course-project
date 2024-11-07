@@ -66,4 +66,19 @@ export class AuthService {
         const patient = await this.patientService.createPatient(patientDto);
         return this.generateToken(patient);
     }
+
+
+    async checkAuth(user: PatientsModel | DoctorsModel) {
+        try {
+            if(user instanceof PatientsModel) {
+                const patient = await this.patientService.getOnePatient(user.id)
+                return this.generateToken(patient)
+            }else{
+                const doctor = await this.doctorService.getOneDoctor(user.id)
+                return this.generateToken(doctor)
+            }
+        }catch (e){
+            throw  new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
 }
