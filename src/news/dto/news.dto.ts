@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 
 export class NewsDto {
-    @ApiProperty({ example: '1', description: 'Unique News id.' })
+    @ApiProperty({ example: 1, description: 'Unique News id.' })
     id: number;
 
     @ApiProperty({ example: 'Breaking News Title', description: 'News title.' })

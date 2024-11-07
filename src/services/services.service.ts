@@ -1,16 +1,16 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
-import { ServiceModel } from "./service.model";
-import { ServiceDto } from "./dto/service.dto";
+import { ServicesModel } from "./services.model";
+import { ServicesDto } from "./dto/services.dto";
 
 @Injectable()
-export class ServiceService {
+export class ServicesService {
     
-    constructor(@InjectModel(ServiceModel) private serviceRepository: typeof ServiceModel) {}
+    constructor(@InjectModel(ServicesModel) private servicesRepository: typeof ServicesModel) {}
 
-    async createService(dto: ServiceDto) {
+    async createService(dto: ServicesDto) {
         try {
-            return await this.serviceRepository.create(dto);
+            return await this.servicesRepository.create(dto);
         } catch (e) {
             throw new HttpException({ message: e }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -18,7 +18,7 @@ export class ServiceService {
 
     async getAllServices() {
         try {
-            return await this.serviceRepository.findAll();
+            return await this.servicesRepository.findAll();
         } catch (e) {
             throw new HttpException({ message: e }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -26,9 +26,9 @@ export class ServiceService {
 
     async getOneService(service_id: number) {
         try {
-            const service = await this.serviceRepository.findByPk(service_id);
+            const service = await this.servicesRepository.findByPk(service_id);
             if (!service) {
-                throw new HttpException({ message: "Service not found." }, HttpStatus.BAD_REQUEST);
+                throw new HttpException({ message: 'Service not found.' }, HttpStatus.BAD_REQUEST);
             }
             return service;
         } catch (e) {
@@ -38,7 +38,7 @@ export class ServiceService {
 
     async deleteService(service_id: number) {
         try {
-            return await this.serviceRepository.destroy({ where: { id: service_id } });
+            return await this.servicesRepository.destroy({ where: { id: service_id } });
         } catch (e) {
             throw new HttpException({ message: e }, HttpStatus.INTERNAL_SERVER_ERROR);
         }

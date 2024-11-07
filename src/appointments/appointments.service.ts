@@ -1,28 +1,29 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { AppointmentsModel } from "./appointments.model";
-import { AppointmentDto } from "./dto/appointments.dto";
-import { GetAppointmentsDto } from "./dto/getAppointments.dto";
-import {PatientsService} from "../patients/patients.service";
-import {ServiceService} from "../service/service.service";
+import { AppointmentsDto } from "./dto/appointments.dto";
+import { GetAppointmentsDto } from "./dto/get-appointments.dto";
+import { PatientsService } from "../patients/patients.service";
+import { ServicesService } from "../services/services.service";
+import { CreateAppointmentsDto } from "./dto/create-appointments.dto";
 
 @Injectable()
 export class AppointmentsService {
     constructor(
         @InjectModel(AppointmentsModel) private appointmentsRepository: typeof AppointmentsModel,
         private patientsService : PatientsService,
-        private serviceService: ServiceService,
+        private servicesService: ServicesService,
     ){}
 
-    async createAppointment(dto: AppointmentDto) {
+    async createAppointment(dto: CreateAppointmentsDto) {
         try {
             const patient = this.patientsService.getOnePatient(dto.patient_id);
-            const service = this.serviceService.getOneService(dto.service_id);
+            const service = this.servicesService.getOneService(dto.service_id);
             if(!patient){
-                throw new HttpException({ message: "patient not found" }, HttpStatus.INTERNAL_SERVER_ERROR);
+                throw new HttpException({ message: 'patient not found' }, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             if(!service){
-                throw new HttpException({ message: "service not found" }, HttpStatus.INTERNAL_SERVER_ERROR);
+                throw new HttpException({ message: 'service not found' }, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             return await this.appointmentsRepository.create(dto);
         } catch (e) {
@@ -32,12 +33,12 @@ export class AppointmentsService {
 
     async getAllAppointments(dto: GetAppointmentsDto) {
         try {
-            if (dto.type === "doctor") {
+            if (dto.type === 'doctor') {
                 return await this.appointmentsRepository.findAll({
                     where: { doctor_id: dto.id },
                     include: { all: true }
                 });
-            } else if (dto.type === "patient") {
+            } else if (dto.type === 'patient') {
                 return await this.appointmentsRepository.findAll({
                     where: { patient_id: dto.id },
                     include: { all: true }
@@ -54,7 +55,7 @@ export class AppointmentsService {
         try {
             const appointment = await this.appointmentsRepository.findByPk(appointments_id, { include: { all: true } });
             if (!appointment) {
-                throw new HttpException({ message: "Appointment not found." }, HttpStatus.BAD_REQUEST);
+                throw new HttpException({ message: 'Appointment not found.' }, HttpStatus.BAD_REQUEST);
             }
             return appointment;
         } catch (e) {
@@ -70,7 +71,7 @@ export class AppointmentsService {
         }
     }
 
-    async updateAppointment(dto: AppointmentDto) {
+    async updateAppointment(dto: AppointmentsDto) {
         try {
             return await this.appointmentsRepository.update(dto, { where: { id: dto.id } });
         } catch (e) {

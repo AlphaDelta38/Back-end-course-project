@@ -1,12 +1,14 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put } from "@nestjs/common";
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { isNumber } from "@nestjs/common/utils/shared.utils";
 import { DiagnosesService } from "./diagnoses.service";
 import { CreateDiagnosesDto } from "./dto/create-diagnoses.dto";
 import { DiagnosesDto } from "./dto/diagnoses.dto";
 
+@ApiTags('Diagnoses')
 @Controller('diagnoses')
 export class DiagnosesController {
+    
     constructor(private diagnosesService: DiagnosesService) {}
 
     @ApiOperation({ summary: 'Create a new diagnosis' })

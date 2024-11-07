@@ -2,24 +2,24 @@ import { Module } from '@nestjs/common';
 import * as process from "process";
 import { ConfigModule } from "@nestjs/config";
 import { SequelizeModule } from '@nestjs/sequelize';
-import { ServiceModule } from './service/service.module';
-import { ServiceModel } from "./service/service.model";
+import { ServicesModule } from './services/services.module';
+import { ServicesModel } from "./services/services.model";
 import { DiagnosesModule } from './diagnoses/diagnoses.module';
 import { DiagnosesModel } from "./diagnoses/diagnoses.model";
 import { AppointmentsModule } from './appointments/appointments.module';
 import { AppointmentsModel } from "./appointments/appointments.model";
 import { PatientsModule } from './patients/patients.module';
-import { PatientModel } from './patients/patients.model';
+import { PatientsModel } from './patients/patients.model';
 import { NewsModule } from './news/news.module';
 import { NewsModel } from './news/news.model';
 import { AuthModule } from './auth/auth.module';
 import { DoctorsModule } from './doctors/doctors.module';
-import { DoctorModel } from './doctors/doctors.model';
+import { DoctorsModel } from './doctors/doctors.model';
 import { RolesModule } from './roles/roles.module';
-import {DoctorRolesModel} from "./roles/doctor-role.model";
-import {RolesModel} from "./roles/roles.model";
-import { RatingModel } from './ratings/ratings.model';
-import { RatingModule } from './ratings/ratings.module';
+import { DoctorsRolesModel } from "./roles/doctors-roles.model";
+import { RolesModel } from "./roles/roles.model";
+import { RatingsModel } from './ratings/ratings.model';
+import { RatingsModule } from './ratings/ratings.module';
 
 @Module({
   imports: [
@@ -35,19 +35,19 @@ import { RatingModule } from './ratings/ratings.module';
       database: process.env.POSTGRES_DB,
       // sync: {alter:true},              /// auto-sync with database
       models: [
-          ServiceModel,
+          ServicesModel,
           DiagnosesModel,
           AppointmentsModel,
-          PatientModel,
+          PatientsModel,
           NewsModel,
-          DoctorModel,
+          DoctorsModel,
           RolesModel,
-          DoctorRolesModel,
-          RatingModel,
+          DoctorsRolesModel,
+          RatingsModel,
       ],
       autoLoadModels: true,
     }),
-    ServiceModule,
+    ServicesModule,
     DiagnosesModule,
     AppointmentsModule,
     PatientsModule,
@@ -55,7 +55,7 @@ import { RatingModule } from './ratings/ratings.module';
     AuthModule,
     DoctorsModule,
     RolesModule,
-    RatingModule,
+    RatingsModule,
   ],
   controllers: [],
   providers: [],

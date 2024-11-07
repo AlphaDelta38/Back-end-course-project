@@ -1,7 +1,6 @@
 import {ApiProperty} from "@nestjs/swagger";
 
-
 export class RolesDto {
-    @ApiProperty({example: "admin", description: "role for the doctor"})
+    @ApiProperty({example: 'admin', description: 'Defines user access level'})
     readonly role: string
 }

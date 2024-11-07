@@ -1,9 +1,9 @@
 import { BelongsTo, Model, Column, DataType, Table } from "sequelize-typescript";
 import { ApiProperty } from "@nestjs/swagger";
-import { ServiceModel } from "../service/service.model";
+import { ServicesModel } from "../services/services.model";
 import { DiagnosesModel } from "../diagnoses/diagnoses.model";
-import {PatientModel} from "../patients/patients.model";
-import {DoctorModel} from "../doctors/doctors.model";
+import { PatientsModel } from "../patients/patients.model";
+import { DoctorsModel } from "../doctors/doctors.model";
 
 interface AppointmentsInterface {
     id: number;
@@ -18,44 +18,44 @@ interface AppointmentsInterface {
 @Table({ tableName: 'appointments', createdAt: true, updatedAt: false })
 export class AppointmentsModel extends Model<AppointmentsModel, AppointmentsInterface> {
 
-    @ApiProperty({ example: 1, description: "Unique key of the appointment" })
+    @ApiProperty({ example: 1, description: 'Unique key of the appointment' })
     @Column({ type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true })
     id: number;
 
-    @ApiProperty({ example: 2, description: "Patient ID for this appointment" })
+    @ApiProperty({ example: 2, description: 'Patient ID for this appointment' })
     @Column({ type: DataType.INTEGER, allowNull: false })
     patient_id: number;
 
-    @ApiProperty({ example: 3, description: "Doctor ID for this appointment" })
+    @ApiProperty({ example: 3, description: 'Doctor ID for this appointment' })
     @Column({ type: DataType.INTEGER, allowNull: false })
     doctor_id: number;
 
-    @ApiProperty({ example: 4, description: "Service ID associated with this appointment" })
+    @ApiProperty({ example: 4, description: 'Service ID associated with this appointment' })
     @Column({ type: DataType.INTEGER, allowNull: false })
     service_id: number;
 
-    @ApiProperty({ example: 2, description: "Diagnosis ID associated with this appointment" })
+    @ApiProperty({ example: 2, description: 'Diagnosis ID associated with this appointment' })
     @Column({ type: DataType.INTEGER, allowNull: true })
     diagnosis_id: number;
 
-    @ApiProperty({ example: "2022-04-22", description: "Date of the appointment" })
+    @ApiProperty({ example: '2022-04-22', description: 'Date of the appointment' })
     @Column({ type: DataType.STRING, allowNull: false })
     date: string;
 
-    @ApiProperty({ example: false, description: "Status of the appointment (true if attended, false otherwise)" })
+    @ApiProperty({ example: false, description: 'Status of the appointment (true if attended, false otherwise)' })
     @Column({ type: DataType.BOOLEAN, allowNull: false })
     status: boolean;
 
-    @BelongsTo(() => ServiceModel, { foreignKey: "service_id" })
-    services: ServiceModel;
+    @BelongsTo(() => ServicesModel, { foreignKey: 'service_id' })
+    services: ServicesModel;
 
-    @BelongsTo(() => DiagnosesModel, { foreignKey: "diagnosis_id" })
+    @BelongsTo(() => DiagnosesModel, { foreignKey: 'diagnosis_id' })
     diagnosis: DiagnosesModel;
 
-    @BelongsTo(() => PatientModel, { foreignKey: "patient_id" })
-    patient: PatientModel;
+    @BelongsTo(() => PatientsModel, { foreignKey: 'patient_id' })
+    patient: PatientsModel;
 
-    @BelongsTo(() => DoctorModel, { foreignKey: "doctor_id" })
-    doctor: DoctorModel;
+    @BelongsTo(() => DoctorsModel, { foreignKey: 'doctor_id' })
+    doctor: DoctorsModel;
 
 }

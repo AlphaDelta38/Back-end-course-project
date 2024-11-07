@@ -1,9 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class AppointmentsDto {
-    @ApiProperty({ example: 1, description: 'Unique Appointment id.' })
-    id: number;
-
+export class CreateAppointmentsDto {
     @ApiProperty({ example: 1, description: 'ID of the patient' })
     patient_id: number;
 

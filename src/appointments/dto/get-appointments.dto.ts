@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class GetRatingsDto {
+export class GetAppointmentsDto {
     @ApiProperty({ example: 1, description: 'ID of the patient or doctor' })
     id: number;
 

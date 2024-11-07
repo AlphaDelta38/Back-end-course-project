@@ -1,12 +1,12 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { CreatePatientDto } from 'src/patients/dto/create-patient.dto';
-import { PatientModel } from 'src/patients/patients.model';
-import { PatientsService } from 'src/patients/patients.service';
-import { DoctorModel } from 'src/doctors/doctors.model';
-import { DoctorsService } from 'src/doctors/doctors.service';
-import { LoginUserDto } from 'src/dto/login-user.dto';
-import * as bcrypt from 'bcrypt';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { CreatePatientsDto } from "src/patients/dto/create-patients.dto";
+import { PatientsModel } from "src/patients/patients.model";
+import { PatientsService } from "src/patients/patients.service";
+import { DoctorsModel } from "src/doctors/doctors.model";
+import { DoctorsService } from "src/doctors/doctors.service";
+import { LoginUsersDto } from "src/dto/login-users.dto";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class AuthService {
@@ -16,7 +16,7 @@ export class AuthService {
         private jwtService: JwtService
     ) {}
 
-    private async generateToken(user: PatientModel | DoctorModel) {
+    private async generateToken(user: PatientsModel | DoctorsModel) {
         const payload = {
             id: user.id,
             email: user.email,
@@ -26,7 +26,7 @@ export class AuthService {
             gender: user.gender,
             phone: user.phone,
             address: user.address,
-            ...(user instanceof PatientModel
+            ...(user instanceof PatientsModel
                 ? { insurance_number: user.insurance_number }
                 : { office_number: user.office_number, speciality: user.speciality, image_link: user.image_link }),
             createdAt: user.createdAt,
@@ -43,7 +43,7 @@ export class AuthService {
             : await this.doctorService.getDoctorByEmail(email);
     }
 
-    private async validateUser(userDto: LoginUserDto) {
+    private async validateUser(userDto: LoginUsersDto) {
         const user = await this.getUserByEmail(userDto.email, userDto.isPatient);
         if (!user) throw new UnauthorizedException({ message: 'User not found.' });
 
@@ -53,15 +53,15 @@ export class AuthService {
         return user;
     }
 
-    async login(userDto: LoginUserDto) {
+    async login(userDto: LoginUsersDto) {
         const user = await this.validateUser(userDto)
         return this.generateToken(user)
     }
 
-    async registration(patientDto: CreatePatientDto) {
+    async registration(patientDto: CreatePatientsDto) {
         const candidate = await this.patientService.getPatientByEmail(patientDto.email);
         if (candidate) {
-            throw new HttpException({message: "Patient with this email exist."}, HttpStatus.BAD_REQUEST);
+            throw new HttpException({message: 'Patient with this email exist.'}, HttpStatus.BAD_REQUEST);
         }
         const patient = await this.patientService.createPatient(patientDto);
         return this.generateToken(patient);

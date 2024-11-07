@@ -1,17 +1,16 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
-import { RatingModel } from './ratings.model';
-import { CreateRatingDto } from './dto/create-rating.dto';
-import { RatingDto } from './dto/rating.dto';
-import { GetRatingsDto } from './dto/get-ratings.dto';
+import { RatingsModel } from "./ratings.model";
+import { CreateRatingsDto } from "./dto/create-ratings.dto";
+import { RatingsDto } from "./dto/ratings.dto";
+import { GetRatingsDto } from "./dto/get-ratings.dto";
 
 @Injectable()
 export class RatingsService {
 
-    constructor(@InjectModel(RatingModel) private  ratingsRepository: typeof RatingModel) {
-    }
+    constructor(@InjectModel(RatingsModel) private  ratingsRepository: typeof RatingsModel) {}
 
-    async createRating(dto: CreateRatingDto){
+    async createRating(dto: CreateRatingsDto){
         try {
             return await this.ratingsRepository.create(dto);
         }catch (e){
@@ -21,12 +20,12 @@ export class RatingsService {
 
     async getAllRatings(dto: GetRatingsDto) {
         try {
-            if (dto.type === "doctor") {
+            if (dto.type === 'doctor') {
                 return await this.ratingsRepository.findAll({
                     where: { doctor_id: dto.id },
                     include: { all: true }
                 });
-            } else if (dto.type === "patient") {
+            } else if (dto.type === 'patient') {
                 return await this.ratingsRepository.findAll({
                     where: { patient_id: dto.id },
                     include: { all: true }
@@ -43,7 +42,7 @@ export class RatingsService {
         try {
           const rating = await this.ratingsRepository.findByPk(rating_id);
           if(!rating){
-              throw new HttpException({message: "Rating not found."}, HttpStatus.INTERNAL_SERVER_ERROR);
+              throw new HttpException({message: 'Rating not found.'}, HttpStatus.INTERNAL_SERVER_ERROR);
           }
           return rating
         }catch (e){
@@ -59,7 +58,7 @@ export class RatingsService {
         }
     }
 
-    async updateRating(dto: RatingDto){
+    async updateRating(dto: RatingsDto){
         try {
             return await this.ratingsRepository.update(dto,{where: {id: dto.id}})
         }catch (e){

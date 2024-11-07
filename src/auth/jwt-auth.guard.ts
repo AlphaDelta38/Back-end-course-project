@@ -1,8 +1,6 @@
-import {CanActivate, ExecutionContext, HttpException, HttpStatus} from "@nestjs/common";
-import {Observable} from "rxjs";
-import {JwtService} from "@nestjs/jwt";
-import * as process from "node:process";
-
+import { CanActivate, ExecutionContext, HttpException, HttpStatus } from "@nestjs/common";
+import { Observable } from "rxjs";
+import { JwtService } from "@nestjs/jwt";
 
 export class JwtAuthGuard implements CanActivate {
 
@@ -19,7 +17,7 @@ export class JwtAuthGuard implements CanActivate {
 
             const bearerToken = headerAuthorization.split(' ')[0];
             const token = headerAuthorization.split(' ')[1];
-            if(bearerToken !== "Bearer"  || !token){
+            if(bearerToken !== 'Bearer'  || !token){
                 throw new HttpException({message: 'User has not been aoutorizated'}, HttpStatus.BAD_REQUEST)
             }
 

@@ -1,10 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
 import { SequelizeModule} from "@nestjs/sequelize";
-import { AppointmentsService } from './appointments.service';
-import { AppointmentsController } from './appointments.controller';
+import { AppointmentsService } from "./appointments.service";
+import { AppointmentsController } from "./appointments.controller";
 import { AppointmentsModel } from "./appointments.model";
-import {PatientsModule} from "../patients/patients.module";
-import {ServiceModule} from "../service/service.module";
+import { PatientsModule } from "../patients/patients.module";
+import { ServicesModule } from "../services/services.module";
 
 @Module({
   providers: [AppointmentsService],
@@ -12,7 +12,7 @@ import {ServiceModule} from "../service/service.module";
   imports: [
     SequelizeModule.forFeature([AppointmentsModel]),
     PatientsModule,
-    ServiceModule,
+    ServicesModule,
   ],
 })
 export class AppointmentsModule {}

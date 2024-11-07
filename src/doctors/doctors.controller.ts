@@ -1,27 +1,23 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { isNumber } from "@nestjs/common/utils/shared.utils";
 import { DoctorsService } from "./doctors.service";
-import { CreateDoctorDto } from "./dto/create-doctor.dto";
-import { DoctorDto } from "./dto/doctor.dto";
-import {setDoctorRolesDto} from "./dto/setDoctorRoles.dto";
+import { CreateDoctorsDto } from "./dto/create-doctor.dto";
+import { DoctorsDto } from "./dto/doctor.dto";
+import { SetDoctorsRolesDto} from "./dto/set-doctors-roles.dto";
 
+@ApiTags('Doctors')
 @Controller('doctors')
 export class DoctorsController {
 
     constructor(private doctorsService: DoctorsService) {}
 
-
-
-
-
-
     @ApiOperation({ summary: 'Create a new doctor' })
     @ApiResponse({ status: 201, description: 'Doctor created successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
     @Post()
-    @ApiBody({ type: CreateDoctorDto })
-    async create(@Body() dto: CreateDoctorDto) {
+    @ApiBody({ type: CreateDoctorsDto })
+    async create(@Body() dto: CreateDoctorsDto) {
         try {
             if (!dto.first_name || !dto.last_name || !dto.date_of_birth || !dto.gender || !dto.email) {
                 throw new HttpException({ message: "Required fields: first_name, last_name, date_of_birth, gender, email." }, HttpStatus.BAD_REQUEST);
@@ -78,8 +74,8 @@ export class DoctorsController {
     @ApiResponse({ status: 200, description: 'Doctor updated successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
     @Put()
-    @ApiBody({ type: DoctorDto })
-    async update(@Body() dto: DoctorDto) {
+    @ApiBody({ type: DoctorsDto })
+    async update(@Body() dto: DoctorsDto) {
         try {
             if (!dto.id) {
                 throw new HttpException({ message: "ID is required for update." }, HttpStatus.BAD_REQUEST);
@@ -95,8 +91,8 @@ export class DoctorsController {
     @ApiResponse({ status: 200, description: 'Doctor role successfully set.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
     @Post("/roles")
-    @ApiBody({ type: setDoctorRolesDto })
-    async setDoctorRole(@Body() dto: setDoctorRolesDto) {
+    @ApiBody({ type: SetDoctorsRolesDto })
+    async setDoctorRole(@Body() dto: SetDoctorsRolesDto) {
         try {
             if (!dto.doctor_id || dto.roles_id.length === 0) {
                 throw new HttpException({ message: "roles id or doctor id not arrived" }, HttpStatus.BAD_REQUEST);

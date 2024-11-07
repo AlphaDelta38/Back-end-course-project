@@ -1,8 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import {BelongsTo, Column, DataType, HasMany, HasOne, Model, Table} from "sequelize-typescript";
-import {AppointmentsModel} from "../appointments/appointments.model";
+import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
+import { AppointmentsModel } from "../appointments/appointments.model";
 
-interface PatientInterface {
+interface PatientsInterface {
     id: number,
     first_name: string;
     last_name: string;
@@ -16,9 +16,9 @@ interface PatientInterface {
 }
 
 @Table({ tableName: 'patients', createdAt: true, updatedAt: true })
-export class PatientModel extends Model<PatientModel, PatientInterface> {
+export class PatientsModel extends Model<PatientsModel, PatientsInterface> {
     
-    @ApiProperty({ example: '1', description: 'Unique Patient id.s' })
+    @ApiProperty({ example: 1, description: 'Unique Patient ID' })
     @Column({ type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true })
     id: number;
 
@@ -58,6 +58,6 @@ export class PatientModel extends Model<PatientModel, PatientInterface> {
     @Column({ type: DataType.STRING, allowNull: false })
     password: string;
 
-    @HasMany(() => AppointmentsModel, { foreignKey: "patient_id" })
+    @HasMany(() => AppointmentsModel, { foreignKey: 'patient_id' })
     appointments: AppointmentsModel[];
 }

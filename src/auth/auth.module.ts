@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { PatientsModule } from 'src/patients/patients.module';
-import { JwtModule } from '@nestjs/jwt';
-import { DoctorsModule } from 'src/doctors/doctors.module';
+import { Module } from "@nestjs/common";
+import { AuthService } from "./auth.service";
+import { AuthController } from "./auth.controller";
+import { PatientsModule } from "src/patients/patients.module";
+import { JwtModule } from "@nestjs/jwt";
+import { DoctorsModule } from "src/doctors/doctors.module";
 
 @Module({
   providers: [AuthService],

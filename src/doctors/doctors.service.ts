@@ -1,25 +1,25 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
-import { DoctorModel  } from "./doctors.model";
-import { CreateDoctorDto } from "./dto/create-doctor.dto";
-import { DoctorDto } from "./dto/doctor.dto";
-import {setDoctorRolesDto} from "./dto/setDoctorRoles.dto";
-import {RolesService} from "../roles/roles.service";
-import {RolesModel} from "../roles/roles.model";
-import * as bcrypt from 'bcrypt';
+import { DoctorsModel  } from "./doctors.model";
+import { CreateDoctorsDto } from "./dto/create-doctor.dto";
+import { DoctorsDto } from "./dto/doctor.dto";
+import { SetDoctorsRolesDto} from "./dto/set-doctors-roles.dto";
+import { RolesService} from "../roles/roles.service";
+import { RolesModel} from "../roles/roles.model";
+import * as bcrypt from "bcrypt";
 
 
 @Injectable()
 export class DoctorsService {
 
-    constructor(@InjectModel(DoctorModel) private  doctorsRepository: typeof DoctorModel, private roleService: RolesService) {
+    constructor(@InjectModel(DoctorsModel) private  doctorsRepository: typeof DoctorsModel, private roleService: RolesService) {
     }
 
-    async createDoctor(dto: CreateDoctorDto){
+    async createDoctor(dto: CreateDoctorsDto){
         try {
-            let role = await this.roleService.getOneRole(0, "doctor");
+            let role = await this.roleService.getOneRole(0, 'doctor');
             if(!role){
-                role = await this.roleService.createRole({role: "doctor"})
+                role = await this.roleService.createRole({role: 'doctor'})
             }
             const hashPassword =  await bcrypt.hash(dto.password, 5);
             const doctor = await this.doctorsRepository.create({...dto, password: hashPassword});
@@ -47,7 +47,7 @@ export class DoctorsService {
                   }
               ]});
           if(!doctor){
-              throw new HttpException({message: "Doctor not found."}, HttpStatus.INTERNAL_SERVER_ERROR);
+              throw new HttpException({message: 'Doctor not found.'}, HttpStatus.INTERNAL_SERVER_ERROR);
           }
           return doctor
         }catch (e){
@@ -72,7 +72,7 @@ export class DoctorsService {
         }
     }
 
-    async updateDoctor(dto: DoctorDto){
+    async updateDoctor(dto: DoctorsDto){
         try {
             return await this.doctorsRepository.update(dto,{where: {id: dto.id}})
         }catch (e){
@@ -80,7 +80,7 @@ export class DoctorsService {
         }
     }
 
-    async setDoctorRoles(dto : setDoctorRolesDto){
+    async setDoctorRoles(dto : SetDoctorsRolesDto){
         try {
             for (const value of dto.roles_id) {
                 const error = await this.setRole(dto.doctor_id, Number(value));
@@ -100,10 +100,10 @@ export class DoctorsService {
             const role = await this.roleService.getOneRole(role_id);
 
             if(!doctor || !role){
-                throw new HttpException({message: "doctor or role not found"}, HttpStatus.BAD_REQUEST);
+                throw new HttpException({message: 'Doctor or Role not found'}, HttpStatus.BAD_REQUEST);
             }
 
-            await doctor.$add("roles", role.id)
+            await doctor.$add('roles', role.id)
             return  1;
         }catch (e){
            return  new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);

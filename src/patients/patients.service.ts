@@ -1,18 +1,18 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
-import { PatientModel  } from "./patients.model";
-import { CreatePatientDto } from "./dto/create-patient.dto";
-import { PatientDto } from "./dto/patient.dto";
-import * as bcrypt from 'bcrypt';
+import { PatientsModel  } from "./patients.model";
+import { CreatePatientsDto } from "./dto/create-patients.dto";
+import { PatientsDto } from "./dto/patients.dto";
+import * as bcrypt from "bcrypt";
 
 
 @Injectable()
 export class PatientsService {
 
-    constructor(@InjectModel(PatientModel) private  patientsRepository: typeof PatientModel) {
+    constructor(@InjectModel(PatientsModel) private  patientsRepository: typeof PatientsModel) {
     }
 
-    async createPatient(dto: CreatePatientDto){
+    async createPatient(dto: CreatePatientsDto){
         try {
             const hashPassword =  await bcrypt.hash(dto.password, 5);
             return await this.patientsRepository.create({...dto, password: hashPassword});
@@ -23,7 +23,7 @@ export class PatientsService {
 
     async getAllPatients(){
         try {
-            return await this.patientsRepository.findAll({attributes: {exclude: ["password"]}});
+            return await this.patientsRepository.findAll({attributes: {exclude: ['password']}});
         }catch (e){
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -31,9 +31,9 @@ export class PatientsService {
 
     async getOnePatient(patient_id:number){
         try {
-          const patient = await this.patientsRepository.findByPk(patient_id, {attributes: {exclude: ["password"]}});
+          const patient = await this.patientsRepository.findByPk(patient_id, {attributes: {exclude: ['password']}});
           if(!patient){
-              throw new HttpException({message: "Patient not found."}, HttpStatus.INTERNAL_SERVER_ERROR);
+              throw new HttpException({message: 'Patient not found.'}, HttpStatus.INTERNAL_SERVER_ERROR);
           }
           return patient
         }catch (e){
@@ -58,7 +58,7 @@ export class PatientsService {
         }
     }
 
-    async updatePatient(dto: PatientDto){
+    async updatePatient(dto: PatientsDto){
         try {
             return await this.patientsRepository.update(dto,{where: {id: dto.id}})
         }catch (e){

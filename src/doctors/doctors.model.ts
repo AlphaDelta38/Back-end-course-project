@@ -1,10 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
-import {BelongsTo, BelongsToMany, Column, DataType, HasMany, Model, Table} from "sequelize-typescript";
+import { BelongsToMany, Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
 import { AppointmentsModel } from "../appointments/appointments.model";
-import {DoctorRolesModel} from "../roles/doctor-role.model";
-import {RolesModel} from "../roles/roles.model";
+import { DoctorsRolesModel } from "../roles/doctors-roles.model";
+import { RolesModel } from "../roles/roles.model";
 
-interface DoctorInterface {
+interface DoctorsInterface {
     id: number;
     first_name: string;
     last_name: string;
@@ -20,9 +20,9 @@ interface DoctorInterface {
 }
 
 @Table({ tableName: 'doctors', createdAt: true, updatedAt: true })
-export class DoctorModel extends Model<DoctorModel, DoctorInterface> {
+export class DoctorsModel extends Model<DoctorsModel, DoctorsInterface> {
 
-    @ApiProperty({ example: '1', description: 'Unique Doctor ID.' })
+    @ApiProperty({ example: 1, description: 'Unique Doctor ID.' })
     @Column({ type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true })
     id: number;
 
@@ -70,10 +70,10 @@ export class DoctorModel extends Model<DoctorModel, DoctorInterface> {
     @Column({ type: DataType.STRING })
     image_link: string;
 
-    @HasMany(() => AppointmentsModel, { foreignKey: "doctor_id" })
+    @HasMany(() => AppointmentsModel, { foreignKey: 'doctor_id' })
     appointments: AppointmentsModel[];
 
-    @BelongsToMany(()=>RolesModel, ()=>DoctorRolesModel)
+    @BelongsToMany(()=>RolesModel, ()=>DoctorsRolesModel)
     roles:  RolesModel[];
 
 }

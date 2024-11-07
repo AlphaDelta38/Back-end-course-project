@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { NewsModel } from "./news.model";
 import { CreateNewsDto } from "./dto/create-news.dto";
@@ -31,7 +31,7 @@ export class NewsService {
         try {
           const news = await this.newsRepository.findByPk(news_id);
           if(!news){
-              throw new HttpException({message: "News not found."}, HttpStatus.INTERNAL_SERVER_ERROR);
+              throw new HttpException({message: 'News not found.'}, HttpStatus.INTERNAL_SERVER_ERROR);
           }
           return news
         }catch (e){

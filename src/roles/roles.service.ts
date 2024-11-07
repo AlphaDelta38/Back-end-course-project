@@ -1,14 +1,12 @@
-import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
-import {InjectModel} from "@nestjs/sequelize";
-import {RolesModel} from "./roles.model";
-import {RolesDto} from "./dto/roles.dto";
-
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/sequelize";
+import { RolesModel } from "./roles.model";
+import { RolesDto } from "./dto/roles.dto";
 
 @Injectable()
 export class RolesService {
 
-    constructor(@InjectModel(RolesModel) private  rolesRepository: typeof RolesModel) {
-    }
+    constructor(@InjectModel(RolesModel) private  rolesRepository: typeof RolesModel) {}
 
     async createRole(dto: RolesDto){
         try {
@@ -36,7 +34,7 @@ export class RolesService {
                 role = await this.rolesRepository.findByPk(id)
             }
             if(!role && !roleName){
-                throw new HttpException({message: "role not found"}, HttpStatus.BAD_REQUEST)
+                throw new HttpException({message: 'Role not found'}, HttpStatus.BAD_REQUEST)
             }
             return role;
         }catch (e){

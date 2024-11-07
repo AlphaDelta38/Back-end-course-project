@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { DiagnosesModel } from "./diagnoses.model";
 import { CreateDiagnosesDto } from "./dto/create-diagnoses.dto";
@@ -29,7 +29,7 @@ export class DiagnosesService {
         try {
             const diagnosis = await this.diagnosesRepository.findByPk(diagnosis_id);
             if (!diagnosis) {
-                throw new HttpException({ message: "Diagnosis not found." }, HttpStatus.INTERNAL_SERVER_ERROR);
+                throw new HttpException({ message: 'Diagnosis not found.' }, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             return diagnosis;
         } catch (e) {
