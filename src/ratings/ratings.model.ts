@@ -31,9 +31,9 @@ export class RatingsModel extends Model<RatingsModel, RatingsInterface> {
     @Column({type: DataType.FLOAT, allowNull: false, validate: { min: 0, max: 5 } })
     rating: number;
 
-    @BelongsTo(() => DoctorsModel)
+    @BelongsTo(() => DoctorsModel, {foreignKey: 'doctor_id'})
     doctor: DoctorsModel;
 
-    @BelongsTo(() => PatientsModel)
+    @BelongsTo(() => PatientsModel, {foreignKey: 'patient_id'})
     patient: PatientsModel;
 }

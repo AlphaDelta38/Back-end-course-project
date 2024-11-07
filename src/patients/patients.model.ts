@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
 import { AppointmentsModel } from "../appointments/appointments.model";
+import {RatingsModel} from "../ratings/ratings.model";
 
 interface PatientsInterface {
     id: number,
@@ -60,4 +61,8 @@ export class PatientsModel extends Model<PatientsModel, PatientsInterface> {
 
     @HasMany(() => AppointmentsModel, { foreignKey: 'patient_id' })
     appointments: AppointmentsModel[];
+
+    @HasMany(() => RatingsModel, {foreignKey: 'patient_id'})
+    setRaitings: RatingsModel[];
+
 }

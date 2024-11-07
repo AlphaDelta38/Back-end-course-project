@@ -1,8 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { BelongsToMany, Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
+import {BelongsTo, BelongsToMany, Column, DataType, HasMany, Model, Table} from "sequelize-typescript";
 import { AppointmentsModel } from "../appointments/appointments.model";
 import { DoctorsRolesModel } from "../roles/doctors-roles.model";
 import { RolesModel } from "../roles/roles.model";
+import {RatingsModel} from "../ratings/ratings.model";
 
 interface DoctorsInterface {
     id: number;
@@ -75,5 +76,9 @@ export class DoctorsModel extends Model<DoctorsModel, DoctorsInterface> {
 
     @BelongsToMany(()=>RolesModel, ()=>DoctorsRolesModel)
     roles:  RolesModel[];
+
+    @HasMany(() => RatingsModel, {foreignKey: 'doctor_id'})
+    raitings: RatingsModel[];
+
 
 }
