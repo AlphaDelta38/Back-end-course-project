@@ -1,12 +1,18 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import {forwardRef, HttpException, HttpStatus, Inject, Injectable} from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { RolesModel } from "./roles.model";
 import { RolesDto } from "./dto/roles.dto";
+import {SetDoctorRole} from "./dto/setDoctorRole.dto";
+import {DoctorsModel} from "../doctors/doctors.model";
+import {DoctorsService} from "../doctors/doctors.service";
 
 @Injectable()
 export class RolesService {
 
-    constructor(@InjectModel(RolesModel) private  rolesRepository: typeof RolesModel) {}
+    constructor(
+        @InjectModel(RolesModel) private  rolesRepository: typeof RolesModel,
+        @Inject(forwardRef(() => DoctorsService)) private doctorsService: DoctorsService,
+    ){}
 
     async createRole(dto: RolesDto){
         try {
@@ -33,7 +39,7 @@ export class RolesService {
             }else{
                 role = await this.rolesRepository.findByPk(id)
             }
-            if(!role && !roleName){
+            if(!role){
                 throw new HttpException({message: 'Role not found'}, HttpStatus.BAD_REQUEST)
             }
             return role;
@@ -49,5 +55,33 @@ export class RolesService {
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
+
+    async setDoctorsRole(dto: SetDoctorRole){
+        try {
+            for (const number of dto.massiveId) {
+                await this.setRole(number, dto.doctor_id)
+            }
+            return 1
+        }catch (e){
+            throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
+
+
+    async setRole(roleId: number, doctorId: number){
+        try {
+            const doctors = await this.doctorsService.getOneDoctor(doctorId)
+            const role = await this.getOneRole(roleId)
+            await doctors.$add("roles", role.id)
+            await doctors.save()
+        }catch (e){
+            throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
+
+
+
+
+
 
 }

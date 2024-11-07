@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post }
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { RolesService } from "./roles.service";
 import { RolesDto } from "./dto/roles.dto";
+import {SetDoctorRole} from "./dto/setDoctorRole.dto";
 
 @ApiTags('Roles')
 @Controller('roles')
@@ -55,6 +56,21 @@ export class RolesController {
             return this.rolesService.deleteOneRole(id);
         } catch (e) {
             throw new HttpException({ message: e.message || 'Failed to delete role' }, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+    @ApiOperation({ summary: 'set roles for doctor' })
+    @ApiResponse({ status: 200, description: 'Roles set successfully' })
+    @Post('/set')
+    async set(@Body() dto: SetDoctorRole) {
+        try {
+            if(dto.massiveId.length === 0 ){
+                throw new HttpException({ message: "no one id not found" }, HttpStatus.BAD_REQUEST);
+            }
+            return this.rolesService.setDoctorsRole(dto);
+        } catch (e) {
+            throw new HttpException({ message: e.message || 'Failed to set roles' }, HttpStatus.BAD_REQUEST);
         }
     }
 }

@@ -57,7 +57,11 @@ export class DoctorsService {
 
     async getDoctorByEmail(email:string){
         try {
-          const doctor = await this.doctorsRepository.findOne({where: {email}});
+          const doctor = await this.doctorsRepository.findOne({where: {email}, include: [
+                  {
+                      model: RolesModel,
+                  }
+              ]});
           return doctor
         }catch (e){
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);

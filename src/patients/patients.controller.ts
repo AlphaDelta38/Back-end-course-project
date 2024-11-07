@@ -5,6 +5,8 @@ import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { PatientsService } from "./patients.service";
 import { CreatePatientsDto } from "./dto/create-patients.dto";
 import { PatientsDto } from "./dto/patients.dto";
+import {Roles} from "../roles/roles.decorator";
+import {RolesGuard} from "../roles/roles.guard";
 
 @ApiTags('Patients')
 @Controller('patients')
@@ -31,6 +33,8 @@ export class PatientsController {
     @ApiOperation({ summary: 'Retrieve all patients' })
     @ApiResponse({ status: 200, description: 'Patients retrieved successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
+    @Roles("doctor")
+    @UseGuards(RolesGuard)
     @UseGuards(JwtAuthGuard)
     @Get()
     async getAll() {

@@ -28,7 +28,7 @@ export class AuthService {
             address: user.address,
             ...(user instanceof PatientsModel
                 ? { insurance_number: user.insurance_number }
-                : { office_number: user.office_number, speciality: user.speciality, image_link: user.image_link }),
+                : { office_number: user.office_number, speciality: user.speciality, image_link: user.image_link , roles: user.roles}),
             createdAt: user.createdAt,
         };
 
