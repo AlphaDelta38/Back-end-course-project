@@ -1,7 +1,6 @@
-import {ApiProperty} from "@nestjs/swagger";
+import { ApiProperty } from "@nestjs/swagger";
 
-
-export class SetDoctorRole {
+export class SetDoctorsRoles {
     @ApiProperty({example: [1,2,3], description: 'roles id'})
     readonly massiveId: number[]
     @ApiProperty({example: 1, description: 'doctor id'})

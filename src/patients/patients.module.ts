@@ -3,7 +3,7 @@ import { PatientsController } from "./patients.controller";
 import { PatientsService } from "./patients.service";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { PatientsModel } from "./patients.model";
-import {JwtModule} from "@nestjs/jwt";
+import { JwtModule } from "@nestjs/jwt";
 
 @Module({
   controllers: [PatientsController],

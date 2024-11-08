@@ -3,7 +3,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { CreatePatientsDto } from "src/patients/dto/create-patients.dto";
 import { AuthService } from "./auth.service";
 import { LoginUsersDto } from "src/dto/login-users.dto";
-import {JwtAuthGuard} from "./jwt-auth.guard";
+import { JwtAuthGuard } from "./jwt-auth.guard";
 
 @ApiTags('Authorization')
 @Controller('auth')

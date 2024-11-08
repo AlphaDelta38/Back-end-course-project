@@ -1,10 +1,10 @@
-import {forwardRef, HttpException, HttpStatus, Inject, Injectable} from "@nestjs/common";
+import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { RolesModel } from "./roles.model";
 import { RolesDto } from "./dto/roles.dto";
-import {SetDoctorRole} from "./dto/setDoctorRole.dto";
-import {DoctorsModel} from "../doctors/doctors.model";
-import {DoctorsService} from "../doctors/doctors.service";
+import { SetDoctorsRoles } from "./dto/set-doctors-roles.dto";
+import { DoctorsModel } from "../doctors/doctors.model";
+import { DoctorsService } from "../doctors/doctors.service";
 
 @Injectable()
 export class RolesService {
@@ -56,7 +56,7 @@ export class RolesService {
         }
     }
 
-    async setDoctorsRole(dto: SetDoctorRole){
+    async setDoctorsRole(dto: SetDoctorsRoles){
         try {
             for (const number of dto.massiveId) {
                 await this.setRole(number, dto.doctor_id)
@@ -78,10 +78,5 @@ export class RolesService {
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
-
-
-
-
-
 
 }

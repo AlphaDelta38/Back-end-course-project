@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
 import { AppointmentsModel } from "../appointments/appointments.model";
-import {RatingsModel} from "../ratings/ratings.model";
+import { RatingsModel } from "../ratings/ratings.model";
 
 interface PatientsInterface {
     id: number,

@@ -5,8 +5,8 @@ import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { PatientsService } from "./patients.service";
 import { CreatePatientsDto } from "./dto/create-patients.dto";
 import { PatientsDto } from "./dto/patients.dto";
-import {Roles} from "../roles/roles.decorator";
-import {RolesGuard} from "../roles/roles.guard";
+import { Roles } from "../roles/roles.decorator";
+import { RolesGuard } from "../roles/roles.guard";
 
 @ApiTags('Patients')
 @Controller('patients')

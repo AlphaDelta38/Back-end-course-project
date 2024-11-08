@@ -4,7 +4,7 @@ import { PatientsModel  } from "./patients.model";
 import { CreatePatientsDto } from "./dto/create-patients.dto";
 import { PatientsDto } from "./dto/patients.dto";
 import * as bcrypt from "bcrypt";
-import {RolesModel} from "../roles/roles.model";
+import { RolesModel } from "../roles/roles.model";
 
 
 @Injectable()
