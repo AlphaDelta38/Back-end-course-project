@@ -39,12 +39,14 @@ export class RolesService {
             }else{
                 role = await this.rolesRepository.findByPk(id)
             }
-            if(!role){
-                throw new HttpException({message: 'Role not found'}, HttpStatus.BAD_REQUEST)
+
+            if(!role && id !== 0){
+                throw new HttpException({message: "User not found"}, HttpStatus.BAD_REQUEST)
             }
+
             return role;
         }catch (e){
-            throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR)
+             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 
