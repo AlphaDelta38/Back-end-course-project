@@ -8,8 +8,15 @@ POSTGRES_DB=HospitalDB
 POSTGRES_PASSWORD=root
 POSTGRES_PORT=5432
 
-SECRET_KEY=secret_key_dada
-CLIENT_APP_URL=http://localhost:3000
+ADMIN_ROLE=admin
+ADMIN_FIRST_NAME=Super
+ADMIN_LAST_NAME=Admin
+ADMIN_DATE_OF_BIRTH=1980-01-01
+ADMIN_GENDER=M
+ADMIN_EMAIL=admin@clinic.com
+ADMIN_PASSWORD=root
+
+SECRET_KEY=secret_key
 `;
 
 const productionEnvContent = `
@@ -20,8 +27,15 @@ POSTGRES_DB=HospitalDB
 POSTGRES_PASSWORD=root
 POSTGRES_PORT=5432
 
-SECRET_KEY=secret_key_dada
-CLIENT_APP_URL=http://localhost:3000
+ADMIN_ROLE=admin
+ADMIN_FIRST_NAME=Super
+ADMIN_LAST_NAME=Admin
+ADMIN_DATE_OF_BIRTH=1980-01-01
+ADMIN_GENDER=M
+ADMIN_EMAIL=admin@clinic.com
+ADMIN_PASSWORD=root
+
+SECRET_KEY=secret_key
 `;
 
 if (!fs.existsSync('.development.env')) {

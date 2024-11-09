@@ -15,7 +15,7 @@ export class RolesModel extends Model<RolesModel, RolesInterface> {
     @Column({ type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true })
     id: number;
 
-    @ApiProperty({ example: 'Admin / Urologist', description: 'Doctor\'s role' })
+    @ApiProperty({ example: 'admin / urologist', description: 'Doctor\'s role' })
     @Column({ type: DataType.STRING, allowNull: false, unique: true })
     role: string;
 

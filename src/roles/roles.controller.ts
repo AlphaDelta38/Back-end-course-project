@@ -60,15 +60,15 @@ export class RolesController {
     }
 
 
-    @ApiOperation({ summary: 'set roles for doctor' })
+    @ApiOperation({ summary: 'Set roles for doctor' })
     @ApiResponse({ status: 200, description: 'Roles set successfully' })
     @Post('/set')
     async set(@Body() dto: SetDoctorsRoles) {
         try {
             if(dto.massiveId.length === 0 ){
-                throw new HttpException({ message: "no one id not found" }, HttpStatus.BAD_REQUEST);
+                throw new HttpException({ message: 'No one id not found' }, HttpStatus.BAD_REQUEST);
             }
-            return this.rolesService.setDoctorsRole(dto);
+            return this.rolesService.setDoctorsRoles(dto);
         } catch (e) {
             throw new HttpException({ message: e.message || 'Failed to set roles' }, HttpStatus.BAD_REQUEST);
         }
