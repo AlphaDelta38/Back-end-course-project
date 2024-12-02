@@ -16,6 +16,7 @@ ADMIN_GENDER=M
 ADMIN_EMAIL=admin@clinic.com
 ADMIN_PASSWORD=root
 
+CLIENT_APP_URL=http://localhost:3000
 SECRET_KEY=secret_key
 `;
 
@@ -33,8 +34,9 @@ ADMIN_LAST_NAME=Admin
 ADMIN_DATE_OF_BIRTH=1980-01-01
 ADMIN_GENDER=M
 ADMIN_EMAIL=admin@clinic.com
-ADMIN_PASSWORD=root
+ADMIN_PASSWORD=admin@clinic.com
 
+CLIENT_APP_URL=http://localhost:3000
 SECRET_KEY=secret_key
 `;
 

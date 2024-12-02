@@ -36,7 +36,7 @@ export class PatientsModel extends Model<PatientsModel, PatientsInterface> {
     date_of_birth: Date;
 
     @ApiProperty({ example: 'M', description: 'Gender of the patient (M or F).' })
-    @Column({ type: DataType.ENUM('M', 'F'), allowNull: false })
+    @Column({ type: DataType.ENUM('M', 'F', 'N'), allowNull: false })
     gender: string;
 
     @ApiProperty({ example: '+123456789', description: 'Phone number of the patient.' })

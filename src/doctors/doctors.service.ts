@@ -123,25 +123,29 @@ export class DoctorsService {
     }
 
     private async createAdminDoctor() {
-        const adminEmail = process.env.ADMIN_EMAIL;
-        const existingAdmin = await this.getDoctorByEmail(adminEmail);
+        try {
+            const adminEmail = process.env.ADMIN_EMAIL;
+            const existingAdmin = await this.getDoctorByEmail(adminEmail);
 
-        if (!existingAdmin) {
-            const adminRole = await this.roleService.getOneRole(0, process.env.ADMIN_ROLE) 
-                || await this.roleService.createRole({ role: process.env.ADMIN_ROLE });
-            
-            const hashPassword =  await bcrypt.hash(process.env.ADMIN_PASSWORD, 5);
-            const adminDoctorDto: CreateDoctorsDto = {
-                first_name: process.env.ADMIN_FIRST_NAME,
-                last_name: process.env.ADMIN_LAST_NAME,
-                date_of_birth: new Date(process.env.ADMIN_DATE_OF_BIRTH),
-                gender: process.env.ADMIN_GENDER,
-                email: adminEmail,
-                password: hashPassword
-            };
+            if (!existingAdmin) {
+                const adminRole = await this.roleService.getOneRole(0, process.env.ADMIN_ROLE)
+                    || await this.roleService.createRole({ role: process.env.ADMIN_ROLE });
 
-            const adminDoctor = await this.doctorsRepository.create(adminDoctorDto);
-            await this.setDoctorRoles({ doctor_id: adminDoctor.id, roles_id: [adminRole.id] });
+                const hashPassword =  await bcrypt.hash(process.env.ADMIN_PASSWORD, 5);
+                const adminDoctorDto: CreateDoctorsDto = {
+                    first_name: process.env.ADMIN_FIRST_NAME,
+                    last_name: process.env.ADMIN_LAST_NAME,
+                    date_of_birth: new Date(process.env.ADMIN_DATE_OF_BIRTH),
+                    gender: process.env.ADMIN_GENDER,
+                    email: adminEmail,
+                    password: hashPassword
+                };
+
+                const adminDoctor = await this.doctorsRepository.create(adminDoctorDto);
+                await this.setDoctorRoles({ doctor_id: adminDoctor.id, roles_id: [adminRole.id] });
+            }
+        }catch (e){
+            console.log(e)
         }
     }
 
