@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { NewsModel } from "./news.model";
 import { CreateNewsDto } from "./dto/create-news.dto";
-import { NewsDto } from "./dto/news.dto";
+import {NewsDto, params} from "./dto/news.dto";
 
 
 @Injectable()
@@ -19,9 +19,23 @@ export class NewsService {
         }
     }
 
-    async getAllNews(){
+    async getAllNews(params: params){
         try {
-            return await this.newsRepository.findAll();
+            const allNews =  await this.newsRepository.findAll({
+                limit: params.limit || 5,
+                offset: (params.page-1 || 0) * (params.limit || 0),
+            });
+
+
+            if(params.sortForward){
+                if(params.sortForward === "ascending"){
+                    allNews.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+                }else if(params.sortForward === "descending"){
+                    allNews.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                }
+            }
+
+            return allNews;
         }catch (e){
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
         }

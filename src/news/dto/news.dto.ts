@@ -13,3 +13,18 @@ export class NewsDto {
     @ApiProperty({ example: 'https://example.com/image.jpg', description: 'Image URL.' })
     image_link: string;
 }
+
+
+
+export class params{
+    limit: number
+    page: number
+    sortForward: forwards
+
+}
+
+
+export enum forwards{
+    ascending = "ascending",
+    descending = "descending",
+}

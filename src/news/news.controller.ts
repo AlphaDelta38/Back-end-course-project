@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put } from "@nestjs/common";
+import {Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query} from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { isNumber } from "@nestjs/common/utils/shared.utils";
 import { NewsService } from "./news.service";
 import { CreateNewsDto } from "./dto/create-news.dto";
-import { NewsDto } from "./dto/news.dto";
+import {NewsDto, params} from "./dto/news.dto";
 
 @ApiTags('News')
 @Controller('news')
@@ -31,9 +31,9 @@ export class NewsController {
     @ApiResponse({ status: 200, description: 'News articles retrieved successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
     @Get()
-    async getAll() {
+    async getAll(@Query() params: params) {
         try {
-            return await this.newsService.getAllNews();
+            return await this.newsService.getAllNews(params);
         } catch (e) {
             throw new HttpException({ message: e.message || 'Failed to retrieve news.' }, HttpStatus.BAD_REQUEST);
         }

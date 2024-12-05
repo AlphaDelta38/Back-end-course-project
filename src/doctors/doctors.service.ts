@@ -2,12 +2,13 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { DoctorsModel  } from "./doctors.model";
 import { CreateDoctorsDto } from "./dto/create-doctor.dto";
-import { DoctorsDto } from "./dto/doctor.dto";
+import {DoctorsDto, getAllDoctorParams} from "./dto/doctor.dto";
 import { SetDoctorsRolesDto} from "./dto/set-doctors-roles.dto";
 import { RolesService} from "../roles/roles.service";
 import { RolesModel} from "../roles/roles.model";
 import * as bcrypt from "bcrypt";
 import * as process from "process";
+import {RatingsModel} from "../ratings/ratings.model";
 
 
 @Injectable()
@@ -31,9 +32,38 @@ export class DoctorsService {
         }
     }
 
-    async getAllDoctors(){
+    async getAllDoctors(params: getAllDoctorParams){
         try {
-            return await this.doctorsRepository.findAll();
+
+            let doctors = await this.doctorsRepository.findAll({
+                limit: params.limit || 5,
+                offset: (params.page-1 || 0)*(params.limit || 0),
+                include: [
+                    {
+                        model:RolesModel,
+                        attributes: ["id", "role"],
+                    },
+                    {
+                        model: RatingsModel,
+                        attributes: ["id", "rating"],
+                    }
+                ],
+                attributes: {exclude: [
+                        "email",
+                        "address",
+                        "password",
+                        "createdAt",
+                        "updatedAt",
+                    ]}
+            });
+
+            if(params.role && doctors.length > 0){
+                doctors = doctors.filter((value)=>value.roles.some((value)=>value.role === params.role));
+                doctors = doctors.filter((values)=>values.roles.some((value)=>value.role !=="admin" && values.roles.length !== 1));
+            }
+
+
+            return doctors;
         }catch (e){
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
         }

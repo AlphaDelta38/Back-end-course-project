@@ -34,3 +34,5 @@ export class CreateDoctorsDto {
     @ApiProperty({ example: 'https://example.com/image.jpg', description: 'Link to the doctor\'s profile image.' })
     image_link?: string;
 }
+
+

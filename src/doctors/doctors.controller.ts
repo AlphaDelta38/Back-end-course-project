@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
+import {Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { isNumber } from "@nestjs/common/utils/shared.utils";
 import { DoctorsService } from "./doctors.service";
 import { CreateDoctorsDto } from "./dto/create-doctor.dto";
-import { DoctorsDto } from "./dto/doctor.dto";
+import {DoctorsDto, getAllDoctorParams} from "./dto/doctor.dto";
 import { SetDoctorsRolesDto} from "./dto/set-doctors-roles.dto";
 
 @ApiTags('Doctors')
@@ -32,9 +32,9 @@ export class DoctorsController {
     @ApiResponse({ status: 200, description: 'Doctors retrieved successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
     @Get()
-    async getAll() {
+    async getAll(@Query() params: getAllDoctorParams) {
         try {
-            return await this.doctorsService.getAllDoctors();
+            return await this.doctorsService.getAllDoctors(params);
         } catch (e) {
             throw new HttpException({ message: e.message || "Failed to retrieve doctors." }, HttpStatus.BAD_REQUEST);
         }

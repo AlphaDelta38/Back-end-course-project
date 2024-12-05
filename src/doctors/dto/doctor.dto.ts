@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import {forwards} from "../../news/dto/news.dto";
 
 export class DoctorsDto {
     @ApiProperty({ example: 1, description: 'Unique Doctors id.' })
@@ -36,4 +37,12 @@ export class DoctorsDto {
 
     @ApiProperty({ example: 'https://example.com/image.jpg', description: 'Link to the doctor\'s profile image.' })
     image_link: string;
+}
+
+
+
+export class getAllDoctorParams{
+    limit?: number
+    page?: number
+    role?: string
 }

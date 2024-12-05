@@ -27,6 +27,7 @@ export class RatingsService {
                 return await this.ratingsRepository.create(dto);
             }
         }catch (e){
+            console.log(e)
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
