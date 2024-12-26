@@ -12,6 +12,7 @@ interface AppointmentsInterface {
     service_id: number;
     diagnosis_id: number;
     date: string;
+    time: string;
     status: boolean;
 }
 
@@ -45,6 +46,10 @@ export class AppointmentsModel extends Model<AppointmentsModel, AppointmentsInte
     @ApiProperty({ example: false, description: 'Status of the appointment (true if attended, false otherwise)' })
     @Column({ type: DataType.BOOLEAN, allowNull: false })
     status: boolean;
+
+    @ApiProperty({ example: "9:30", description: 'time of appointments' })
+    @Column({ type: DataType.STRING, allowNull: false })
+    time: string;
 
     @BelongsTo(() => ServicesModel, { foreignKey: 'service_id' })
     services: ServicesModel;

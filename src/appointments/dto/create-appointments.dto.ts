@@ -16,6 +16,9 @@ export class CreateAppointmentsDto {
     @ApiProperty({ example: '2024-04-22', description: 'Date of the appointment (YYYY-MM-DD format)' })
     date: string;
 
+    @ApiProperty({ example: '8:30', description: 'time of appointments' })
+    time: string;
+
     @ApiProperty({ example: true, description: 'Status of the appointment (true for active, false for canceled)' })
     status: boolean;
 }

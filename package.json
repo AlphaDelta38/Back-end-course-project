@@ -21,6 +21,7 @@
     "postinstall": "node create-env-files.js"
   },
   "dependencies": {
+    "@nestjs-modules/ioredis": "^2.0.2",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.3.0",
     "@nestjs/core": "^10.0.0",
@@ -32,6 +33,7 @@
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "ioredis": "^5.4.2",
     "mysql2": "^3.11.3",
     "passport-jwt": "^4.0.1",
     "pg": "^8.13.1",

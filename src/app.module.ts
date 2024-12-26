@@ -20,6 +20,8 @@ import { DoctorsRolesModel } from "./roles/doctors-roles.model";
 import { RolesModel } from "./roles/roles.model";
 import { RatingsModel } from './ratings/ratings.model';
 import { RatingsModule } from './ratings/ratings.module';
+import { SpecialityModule } from './speciality/speciality.module';
+import {SpecialityModel} from "./speciality/speciality.model";
 
 @Module({
   imports: [
@@ -44,6 +46,7 @@ import { RatingsModule } from './ratings/ratings.module';
           RolesModel,
           DoctorsRolesModel,
           RatingsModel,
+          SpecialityModel,
       ],
       autoLoadModels: true,
     }),
@@ -56,6 +59,7 @@ import { RatingsModule } from './ratings/ratings.module';
     DoctorsModule,
     RolesModule,
     RatingsModule,
+    SpecialityModule,
   ],
   controllers: [],
   providers: [],

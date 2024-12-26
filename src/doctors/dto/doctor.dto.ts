@@ -29,8 +29,8 @@ export class DoctorsDto {
     @ApiProperty({ example: '101', description: 'Office number of the doctor.' })
     office_number: string;
 
-    @ApiProperty({ example: 'Cardiology', description: 'Speciality of the doctor.' })
-    speciality: string;
+    @ApiProperty({ example: 1, description: 'Speciality of the doctor.' })
+    speciality_id: number;
 
     @ApiProperty({ example: 'password123', description: 'Password for the doctor\'s account.' })
     password: string;

@@ -1,9 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { BelongsToMany, Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
+import {BelongsTo, BelongsToMany, Column, DataType, HasMany, Model, Table} from "sequelize-typescript";
 import { AppointmentsModel } from "../appointments/appointments.model";
 import { DoctorsRolesModel } from "../roles/doctors-roles.model";
 import { RolesModel } from "../roles/roles.model";
 import { RatingsModel } from "../ratings/ratings.model";
+import {SpecialityModel} from "../speciality/speciality.model";
 
 interface DoctorsInterface {
     id: number;
@@ -15,7 +16,7 @@ interface DoctorsInterface {
     email: string;
     address: string;
     office_number: string;
-    speciality: string;
+    speciality_id: number;
     password: string;
     image_link: string;
 }
@@ -59,9 +60,9 @@ export class DoctorsModel extends Model<DoctorsModel, DoctorsInterface> {
     @Column({ type: DataType.STRING })
     office_number: string;
 
-    @ApiProperty({ example: 'Cardiology', description: 'Specialty of the doctor.' })
-    @Column({ type: DataType.STRING })
-    speciality: string;
+    @ApiProperty({ example: 1, description: 'Example response: Surgeon' })
+    @Column({ type: DataType.INTEGER, allowNull: true})
+    speciality_id: number;
 
     @ApiProperty({ example: 'password123', description: 'Password for the doctor\'s account.' })
     @Column({ type: DataType.STRING, allowNull: false })
@@ -74,11 +75,18 @@ export class DoctorsModel extends Model<DoctorsModel, DoctorsInterface> {
     @HasMany(() => AppointmentsModel, { foreignKey: 'doctor_id' })
     appointments: AppointmentsModel[];
 
+    @HasMany(() => RatingsModel, {foreignKey: 'doctor_id'})
+    raitings: RatingsModel[];
+
+    @BelongsTo(()=>SpecialityModel, {foreignKey: 'speciality_id'})
+    speciality: SpecialityModel;
+
     @BelongsToMany(()=>RolesModel, ()=>DoctorsRolesModel)
     roles:  RolesModel[];
 
-    @HasMany(() => RatingsModel, {foreignKey: 'doctor_id'})
-    raitings: RatingsModel[];
+
+
+
 
 
 }

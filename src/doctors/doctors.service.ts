@@ -9,13 +9,15 @@ import { RolesModel} from "../roles/roles.model";
 import * as bcrypt from "bcrypt";
 import * as process from "process";
 import {RatingsModel} from "../ratings/ratings.model";
+import {AppointmentsModel} from "../appointments/appointments.model";
+import {SpecialityModel} from "../speciality/speciality.model";
 
 
 @Injectable()
 export class DoctorsService {
 
-    constructor(@InjectModel(DoctorsModel) private  doctorsRepository: typeof DoctorsModel, private roleService: RolesService) {
-    }
+    constructor(
+        @InjectModel(DoctorsModel) private  doctorsRepository: typeof DoctorsModel, private roleService: RolesService) {}
 
     async createDoctor(dto: CreateDoctorsDto){
         try {
@@ -46,10 +48,15 @@ export class DoctorsService {
                     {
                         model: RatingsModel,
                         attributes: ["id", "rating"],
+                    },
+                    {
+                        model: AppointmentsModel,
+                    },
+                    {
+                        model: SpecialityModel,
                     }
                 ],
                 attributes: {exclude: [
-                        "email",
                         "address",
                         "password",
                         "createdAt",
@@ -74,6 +81,9 @@ export class DoctorsService {
           const doctor = await this.doctorsRepository.findByPk(doctor_id, {include: [
                   {
                       model: RolesModel,
+                  },
+                  {
+                      model: SpecialityModel
                   }
               ]});
           if(!doctor){
@@ -152,6 +162,15 @@ export class DoctorsService {
         }
     }
 
+    async getAmountDoctors(){
+        try {
+            const doctors = await this.doctorsRepository.findAll()
+            return doctors.length
+        }catch (e){
+            return  new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     private async createAdminDoctor() {
         try {
             const adminEmail = process.env.ADMIN_EMAIL;
@@ -178,5 +197,7 @@ export class DoctorsService {
             console.log(e)
         }
     }
+
+
 
 }

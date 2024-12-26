@@ -103,4 +103,16 @@ export class DoctorsController {
         }
     }
 
+    @ApiOperation({ summary: 'get amount of doctors ' })
+    @ApiResponse({ status: 200, description: 'Amount of doctors successfully got.' })
+    @ApiResponse({ status: 400, description: 'Invalid request.' })
+    @Get("/get/amount")
+    async getAmount() {
+        try {
+            return await this.doctorsService.getAmountDoctors();
+        } catch (e) {
+            throw new HttpException({ message: e.message || "Failed to get amount." }, HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
