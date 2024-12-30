@@ -24,7 +24,7 @@ export class DoctorsController {
             }
             return await this.doctorsService.createDoctor(dto);
         } catch (e) {
-            throw new HttpException({ message: e.message || "Failed to create doctor." }, HttpStatus.BAD_REQUEST);
+            throw new HttpException({ message: e || "Failed to create doctor." }, HttpStatus.BAD_REQUEST);
         }
     }
 

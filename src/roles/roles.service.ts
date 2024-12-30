@@ -34,7 +34,6 @@ export class RolesService {
             let role: RolesModel;
             if(roleName){
                 role = await this.rolesRepository.findOne({where: {role: roleName}})
-                console.log(role)
             }else{
                 role = await this.rolesRepository.findByPk(id)
             }

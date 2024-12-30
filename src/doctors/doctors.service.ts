@@ -24,9 +24,23 @@ export class DoctorsService {
             const role = await this.roleService.getOneRole(0, 'doctor') 
                 || await this.roleService.createRole({ role: 'doctor' });
 
+
             const hashPassword =  await bcrypt.hash(dto.password, 5);
-            const doctor = await this.doctorsRepository.create({...dto, password: hashPassword});
-            await this.setDoctorRoles({doctor_id: doctor.id, roles_id: [role.id]});
+            const {roles, ...dtoFiltered } = dto
+            const doctor = await this.doctorsRepository.create({...dtoFiltered, password: hashPassword});
+
+            const needRoles: number[] = []
+
+            if(roles.length > 0){
+                let allRoles = await this.roleService.getAllRoles()
+                allRoles = allRoles.filter((values)=>roles.includes(values.role))
+
+                allRoles.forEach((value)=>{
+                    needRoles.push(value.id)
+                })
+            }
+
+            await this.setDoctorRoles({doctor_id: doctor.id, roles_id: [role.id, ...needRoles]});
 
             return doctor;
         }catch (e){
@@ -57,7 +71,6 @@ export class DoctorsService {
                     }
                 ],
                 attributes: {exclude: [
-                        "address",
                         "password",
                         "createdAt",
                         "updatedAt",
@@ -65,8 +78,8 @@ export class DoctorsService {
             });
 
             if(params.role && doctors.length > 0){
-                doctors = doctors.filter((value)=>value.roles.some((value)=>value.role === params.role));
-                doctors = doctors.filter((values)=>values.roles.some((value)=>value.role !=="admin" && values.roles.length !== 1));
+                doctors = doctors.filter((values)=>values.roles.some((value)=>value.role === params.role));
+                doctors = doctors.filter((values)=> !values.roles.some((value)=>value.role ==="admin"));
             }
 
 
@@ -118,7 +131,52 @@ export class DoctorsService {
 
     async updateDoctor(dto: DoctorsDto){
         try {
-            return await this.doctorsRepository.update(dto,{where: {id: dto.id}})
+            const {roles, ...doctorData} = dto
+            const doctor =await this.getOneDoctor(doctorData.id)
+            if(!doctor){
+                throw new HttpException({message: "doctor not found"}, HttpStatus.BAD_REQUEST)
+            }
+
+            let newHashPassword;
+            if(dto.password){
+                newHashPassword =  await bcrypt.hash(dto.password, 5);
+            }
+
+
+            const willDelete:number[]= [];
+
+            doctor.roles.forEach((value)=>{
+                if(!roles.includes(value.role)){
+                    willDelete.push(value.id)
+                }
+            })
+
+            for (const value of willDelete){
+                const errorCheck = await this.deleteRole(doctor.id, value)
+            }
+
+            const needRoles: number[] = []
+
+            if(roles.length > 0){
+                let allRoles = await this.roleService.getAllRoles()
+                allRoles = allRoles.filter((values)=>roles.includes(values.role))
+                allRoles.forEach((value)=>{
+                    needRoles.push(value.id)
+                })
+            }
+
+            await this.setDoctorRoles({doctor_id: doctor.id, roles_id: needRoles})
+
+            let updatedDoctor;
+
+            if(newHashPassword){
+                 updatedDoctor = await this.doctorsRepository.update({...doctorData, password: newHashPassword}, {where: {id: doctor.id}})
+            }else{
+                 updatedDoctor = await this.doctorsRepository.update(doctorData, {where: {id: doctor.id}})
+
+            }
+
+            return updatedDoctor;
         }catch (e){
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -134,6 +192,23 @@ export class DoctorsService {
             }
         }catch (e){
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async deleteRole(doctor_id: number, role_id: number){
+        try {
+
+            const doctor = await this.doctorsRepository.findByPk(doctor_id);
+            const role = await this.roleService.getOneRole(role_id);
+
+            if(!doctor || !role){
+                throw new HttpException({message: 'Doctor or Role not found'}, HttpStatus.BAD_REQUEST);
+            }
+
+            await doctor.$remove('roles', role.id)
+            return  1;
+        }catch (e){
+            return  new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

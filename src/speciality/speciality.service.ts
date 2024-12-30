@@ -17,6 +17,7 @@ export class SpecialityService {
             if(!speciality){
                 throw new HttpException({message: "Bad request for create speciality "}, HttpStatus.BAD_REQUEST)
             }
+            return speciality
         }catch (e){
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR)
         }

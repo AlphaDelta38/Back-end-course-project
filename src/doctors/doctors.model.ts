@@ -69,7 +69,7 @@ export class DoctorsModel extends Model<DoctorsModel, DoctorsInterface> {
     password: string;
 
     @ApiProperty({ example: 'https://example.com/image.jpg', description: 'Link to the doctor\'s profile image.' })
-    @Column({ type: DataType.STRING })
+    @Column({ type: DataType.TEXT })
     image_link: string;
 
     @HasMany(() => AppointmentsModel, { foreignKey: 'doctor_id' })

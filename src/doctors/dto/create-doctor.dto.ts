@@ -25,14 +25,17 @@ export class CreateDoctorsDto {
     @ApiProperty({ example: '101', description: 'Office number of the doctor.' })
     office_number?: string;
 
-    @ApiProperty({ example: 'Cardiology', description: 'Speciality of the doctor.' })
-    speciality?: string;
+    @ApiProperty({ example: 1, description: ' Speciality`s id of the doctor.' })
+    speciality_id?: number;
 
     @ApiProperty({ example: 'password123', description: 'Password for the doctor\'s account.' })
     password: string;
 
     @ApiProperty({ example: 'https://example.com/image.jpg', description: 'Link to the doctor\'s profile image.' })
     image_link?: string;
+
+    @ApiProperty({ example: ["admin", "doctor"], description: 'roles name for doctor' })
+    roles?: string[];
 }
 
 
