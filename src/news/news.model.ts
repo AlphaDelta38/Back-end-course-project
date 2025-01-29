@@ -20,10 +20,10 @@ export class NewsModel extends Model<NewsModel, NewsInterface> {
     title: string;
 
     @ApiProperty({ example: 'Detailed description...', description: 'News content.' })
-    @Column({type: DataType.STRING, allowNull: false})
+    @Column({type: DataType.TEXT, allowNull: false})
     text: string;
 
     @ApiProperty({ example: 'https://example.com/image.jpg', description: 'Image URL.' })
-    @Column({type: DataType.STRING, allowNull: false})
+    @Column({type: DataType.TEXT, allowNull: false})
     image_link: string;
 }

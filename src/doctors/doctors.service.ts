@@ -239,8 +239,10 @@ export class DoctorsService {
 
     async getAmountDoctors(){
         try {
-            const doctors = await this.doctorsRepository.findAll()
-            return doctors.length
+            const doctors = await this.doctorsRepository.findAll({include: {model: RolesModel}})
+            const withoutAdmin = doctors.filter((value)=>value.roles.every((value)=>value.role !=="admin")).length
+
+            return withoutAdmin
         }catch (e){
             return  new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
         }

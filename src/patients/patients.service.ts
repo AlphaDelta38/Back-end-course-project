@@ -5,6 +5,7 @@ import { CreatePatientsDto } from "./dto/create-patients.dto";
 import { PatientsDto } from "./dto/patients.dto";
 import * as bcrypt from "bcrypt";
 import { RolesModel } from "../roles/roles.model";
+import {GetPatientsDto} from "./dto/get-patients.dto";
 
 
 @Injectable()
@@ -22,8 +23,11 @@ export class PatientsService {
         }
     }
 
-    async getAllPatients(){
+    async getAllPatients(dto: GetPatientsDto){
         try {
+            if(Number(dto.limit)){
+                return await this.patientsRepository.findAll({attributes: {exclude: ['password']}, limit: dto.limit, offset: (dto.page-1 || 0) * dto.limit});
+            }
             return await this.patientsRepository.findAll({attributes: {exclude: ['password']}});
         }catch (e){
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -61,7 +65,25 @@ export class PatientsService {
 
     async updatePatient(dto: PatientsDto){
         try {
-            return await this.patientsRepository.update(dto,{where: {id: dto.id}})
+            if(dto.password){
+                const hashPassword =  await bcrypt.hash(dto.password, 5);
+                return await this.patientsRepository.update({...dto, password: hashPassword},{where: {id: dto.id}})
+            }else{
+                return await this.patientsRepository.update(dto,{where: {id: dto.id}})
+            }
+        }catch (e){
+            throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async getAmount(){
+        try {
+            const patients = await this.patientsRepository.findAll({attributes: {exclude: ['password']}});
+            if(!patients){
+                return 0
+            }else{
+                return patients.length
+            }
         }catch (e){
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
         }

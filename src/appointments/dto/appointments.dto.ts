@@ -19,6 +19,12 @@ export class AppointmentsDto {
     @ApiProperty({ example: '2024-04-22', description: 'Date of the appointment (YYYY-MM-DD format)' })
     date: string;
 
+    @ApiProperty({ example: '1 tablet daily', description: 'Treatment notes or dosage.' })
+    notes?: string;
+
+    @ApiProperty({ example: 'Paracetamol', description: 'Prescribed medication.' })
+    prescription?: string;
+
     @ApiProperty({ example: true, description: 'Status of the appointment (true for active, false for canceled)' })
     status: boolean;
 }

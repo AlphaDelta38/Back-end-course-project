@@ -27,6 +27,18 @@ export class NewsController {
         }
     }
 
+    @ApiOperation({ summary: 'get Amount of news' })
+    @ApiResponse({ status: 200, description: 'News Amount gave successfully.' })
+    @ApiResponse({ status: 400, description: 'Invalid request.' })
+    @Get("get/amount")
+    async getAmount() {
+        try {
+            return await this.newsService.getAmountOfNews();
+        } catch (e) {
+            throw new HttpException({ message: e.message || 'Failed to update news.' }, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @ApiOperation({ summary: 'Retrieve all news articles' })
     @ApiResponse({ status: 200, description: 'News articles retrieved successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
@@ -84,4 +96,7 @@ export class NewsController {
             throw new HttpException({ message: e.message || 'Failed to update news.' }, HttpStatus.BAD_REQUEST);
         }
     }
+
+
+
 }

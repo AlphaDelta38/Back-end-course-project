@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put } from "@nestjs/common";
+import {Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query} from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { isNumber } from "@nestjs/common/utils/shared.utils";
 import { DiagnosesService } from "./diagnoses.service";
 import { CreateDiagnosesDto } from "./dto/create-diagnoses.dto";
-import { DiagnosesDto } from "./dto/diagnoses.dto";
+import {DiagnosesDto, getAllDiagnosesParams} from "./dto/diagnoses.dto";
 
 @ApiTags('Diagnoses')
 @Controller('diagnoses')
@@ -18,7 +18,7 @@ export class DiagnosesController {
     @ApiBody({ type: CreateDiagnosesDto })
     async create(@Body() dto: CreateDiagnosesDto) {
         try {
-            if (!dto.diagnosis || !dto.prescription) {
+            if (!dto.diagnosis) {
                 throw new HttpException({ message: "Diagnosis and prescription are required." }, HttpStatus.BAD_REQUEST);
             }
             return await this.diagnosesService.createDiagnosis(dto);
@@ -27,13 +27,27 @@ export class DiagnosesController {
         }
     }
 
+    @ApiOperation({ summary: 'Get Amount diagnoses' })
+    @ApiResponse({ status: 200, description: 'Diagnoses got successfully.' })
+    @ApiResponse({ status: 400, description: 'Invalid request.' })
+    @Get("/get/amount")
+    async getAmount() {
+        try {
+            return await this.diagnosesService.getAmount();
+        } catch (e) {
+            throw new HttpException({ message: e.message || "Failed to retrieve diagnoses." }, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+
     @ApiOperation({ summary: 'Retrieve all diagnoses' })
     @ApiResponse({ status: 200, description: 'Diagnoses retrieved successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
     @Get()
-    async getAll() {
+    async getAll(@Query() dto: getAllDiagnosesParams) {
         try {
-            return await this.diagnosesService.getAllDiagnoses();
+            return await this.diagnosesService.getAllDiagnoses(dto);
         } catch (e) {
             throw new HttpException({ message: e.message || "Failed to retrieve diagnoses." }, HttpStatus.BAD_REQUEST);
         }
@@ -60,7 +74,7 @@ export class DiagnosesController {
     @Delete("/:id")
     async delete(@Param('id') diagnosis_id: number) {
         try {
-            if (!isNumber(diagnosis_id)) {
+            if (!isNumber(Number(diagnosis_id))) {
                 throw new HttpException({ message: "ID must be a number." }, HttpStatus.BAD_REQUEST);
             }
             return await this.diagnosesService.deleteDiagnosis(diagnosis_id);

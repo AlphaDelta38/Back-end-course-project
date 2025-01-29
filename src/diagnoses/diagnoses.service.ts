@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { DiagnosesModel } from "./diagnoses.model";
 import { CreateDiagnosesDto } from "./dto/create-diagnoses.dto";
-import { DiagnosesDto } from "./dto/diagnoses.dto";
+import {DiagnosesDto, getAllDiagnosesParams} from "./dto/diagnoses.dto";
 
 @Injectable()
 export class DiagnosesService {
@@ -17,9 +17,15 @@ export class DiagnosesService {
         }
     }
 
-    async getAllDiagnoses() {
+    async getAllDiagnoses(dto: getAllDiagnosesParams) {
         try {
-            return await this.diagnosesRepository.findAll();
+
+            if(dto.limit){
+                return await this.diagnosesRepository.findAll({limit: dto.limit, offset: (dto.page-1) * dto.limit});
+            }else{
+                return await this.diagnosesRepository.findAll();
+            }
+
         } catch (e) {
             throw new HttpException({ message: e }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -39,7 +45,7 @@ export class DiagnosesService {
 
     async deleteDiagnosis(diagnosis_id: number) {
         try {
-            return await this.diagnosesRepository.destroy({ where: { id: diagnosis_id } });
+            return await this.diagnosesRepository.destroy({ where: { id: Number(diagnosis_id )} });
         } catch (e) {
             throw new HttpException({ message: e }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -47,9 +53,19 @@ export class DiagnosesService {
 
     async updateDiagnosis(dto: DiagnosesDto) {
         try {
-            return await this.diagnosesRepository.update(dto, { where: { id: dto.id } });
+            return await this.diagnosesRepository.update(dto, { where: { id: Number(dto.id) } });
         } catch (e) {
             throw new HttpException({ message: e }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    async getAmount(){
+        const diagnoses = await this.diagnosesRepository.findAll()
+        if(!diagnoses){
+            return 0
+        }
+        return diagnoses.length
+    }
+
 }

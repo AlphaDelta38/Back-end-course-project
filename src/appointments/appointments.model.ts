@@ -14,6 +14,8 @@ interface AppointmentsInterface {
     date: string;
     time: string;
     status: boolean;
+    notes?: string;
+    prescription: string;
 }
 
 @Table({ tableName: 'appointments', createdAt: true, updatedAt: false })
@@ -50,6 +52,15 @@ export class AppointmentsModel extends Model<AppointmentsModel, AppointmentsInte
     @ApiProperty({ example: "9:30", description: 'time of appointments' })
     @Column({ type: DataType.STRING, allowNull: false })
     time: string;
+
+    @ApiProperty({ example: 'Take medication twice daily', description: 'Additional notes for treatment' })
+    @Column({ type: DataType.TEXT, allowNull: true })
+    notes: string;
+
+    @ApiProperty({ example: 'Paracetamol, Ibuprofen', description: 'Prescription details for the diagnosis' })
+    @Column({ type: DataType.STRING, allowNull: true })
+    prescription: string;
+
 
     @BelongsTo(() => ServicesModel, { foreignKey: 'service_id' })
     services: ServicesModel;

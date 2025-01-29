@@ -15,6 +15,7 @@ export class NewsService {
         try {
             return await this.newsRepository.create(dto);
         }catch (e){
+            console.log(e)
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -64,6 +65,14 @@ export class NewsService {
     async updateNews(dto: NewsDto){
         try {
             return await this.newsRepository.update(dto,{where: {id: dto.id}})
+        }catch (e){
+            throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async getAmountOfNews(){
+        try {
+            return await this.newsRepository.findAll().then(value => value.length)
         }catch (e){
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
         }
