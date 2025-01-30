@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post } from "@nestjs/common";
+import {Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query} from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { isNumber } from "@nestjs/common/utils/shared.utils";
 import { ServicesService } from "./services.service";
-import { ServicesDto } from "./dto/services.dto";
+import {getAllServicesParams, ServicesDto} from "./dto/services.dto";
+import {UpdateServicesDto} from "./dto/update-services.dto";
 
 @ApiTags('Services')
 @Controller('services')
@@ -22,12 +23,22 @@ export class ServicesController {
         return await this.servicesService.createService(dto);
     }
 
+
+    @ApiOperation({ summary: 'Give length of services' })
+    @ApiResponse({ status: 200, description: 'Successfully retrieved length.' })
+    @ApiResponse({ status: 500, description: 'Internal server error.' })
+    @Get("/get/amount")
+    async getServiceAmount() {
+        return await this.servicesService.getAmount();
+    }
+
+
     @ApiOperation({ summary: 'Retrieve all services' })
     @ApiResponse({ status: 200, description: 'Successfully retrieved all services.' })
     @ApiResponse({ status: 500, description: 'Internal server error.' })
     @Get()
-    async getAll() {
-        return await this.servicesService.getAllServices();
+    async getAll(@Query() dto: getAllServicesParams) {
+        return await this.servicesService.getAllServices(dto);
     }
 
     @ApiOperation({ summary: 'Retrieve a specific service by ID' })
@@ -42,6 +53,22 @@ export class ServicesController {
         const service = await this.servicesService.getOneService(service_id);
         if (!service) {
             throw new HttpException({ message: 'Service not found.' }, HttpStatus.NOT_FOUND);
+        }
+        return service;
+    }
+
+    @ApiOperation({ summary: 'Update the service by id' })
+    @ApiResponse({ status: 200, description: 'Service successfully updated.' })
+    @ApiResponse({ status: 400, description: 'Bad request: ID is not a number.' })
+    @ApiResponse({ status: 404, description: 'Service not found.' })
+    @Put()
+    async update(@Body()  dto: UpdateServicesDto) {
+        if (!isNumber(Number(dto.id))) {
+            throw new HttpException({ message: 'ID must be a number.' }, HttpStatus.BAD_REQUEST);
+        }
+        const service = await this.servicesService.updateService(dto);
+        if (!service) {
+            throw new HttpException({ message: 'Service not found bad ID' }, HttpStatus.BAD_REQUEST);
         }
         return service;
     }
@@ -61,4 +88,6 @@ export class ServicesController {
         }
         return { message: 'Service successfully deleted.' };
     }
+
+
 }

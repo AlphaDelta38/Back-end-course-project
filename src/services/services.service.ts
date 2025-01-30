@@ -1,7 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { ServicesModel } from "./services.model";
-import { ServicesDto } from "./dto/services.dto";
+import {getAllServicesParams, ServicesDto} from "./dto/services.dto";
+import {UpdateServicesDto} from "./dto/update-services.dto";
 
 @Injectable()
 export class ServicesService {
@@ -16,9 +17,16 @@ export class ServicesService {
         }
     }
 
-    async getAllServices() {
+    async getAllServices(dto: getAllServicesParams) {
         try {
-            return await this.servicesRepository.findAll();
+            if(dto.limit){
+                return await this.servicesRepository.findAll({
+                    limit: dto.limit,
+                    offset: ((dto.page-1) || 0) * dto.limit,
+                });
+            }else{
+                return await this.servicesRepository.findAll();
+            }
         } catch (e) {
             throw new HttpException({ message: e }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -36,9 +44,31 @@ export class ServicesService {
         }
     }
 
+
+    async updateService(dto: UpdateServicesDto ) {
+        try {
+            return await this.servicesRepository.update(dto, {where: {id: dto.id}});
+        } catch (e) {
+            throw new HttpException({ message: e }, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     async deleteService(service_id: number) {
         try {
             return await this.servicesRepository.destroy({ where: { id: service_id } });
+        } catch (e) {
+            throw new HttpException({ message: e }, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    async getAmount() {
+        try {
+            const services = await this.servicesRepository.findAll()
+            if(!services){
+                return 0
+            }
+            return  services.length
         } catch (e) {
             throw new HttpException({ message: e }, HttpStatus.INTERNAL_SERVER_ERROR);
         }

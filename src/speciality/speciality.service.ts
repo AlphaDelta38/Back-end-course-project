@@ -1,7 +1,7 @@
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/sequelize";
 import {SpecialityModel} from "./speciality.model";
-import {specialityDto} from "./dto/speciality.dto";
+import {getAllSpecialityParams, specialityDto} from "./dto/speciality.dto";
 import {specialityUpdateDto} from "./dto/specialityUpdate.dto";
 
 @Injectable()
@@ -24,9 +24,16 @@ export class SpecialityService {
     }
 
 
-    async getAllSpeciality() {
+    async getAllSpeciality(dto: getAllSpecialityParams) {
         try {
-            return await this.specialityModel.findAll()
+            if(dto.limit){
+                return  await this.specialityModel.findAll({
+                    limit: dto.limit,
+                    offset: ((dto.page-1) || 0) * dto.limit,
+                })
+            }else{
+                return await this.specialityModel.findAll()
+            }
         }catch (e){
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR)
         }
@@ -60,5 +67,19 @@ export class SpecialityService {
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
+
+
+    async getSpecialityAmount() {
+        try {
+            const specialities = await this.specialityModel.findAll()
+            if(!specialities){
+                return 0;
+            }
+            return specialities.length
+        }catch (e){
+            throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
+
 
 }

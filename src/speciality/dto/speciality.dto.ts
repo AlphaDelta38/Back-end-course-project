@@ -7,3 +7,8 @@ export class specialityDto{
 }
 
 
+export class getAllSpecialityParams{
+    limit?: number
+    page?: number
+    role?: string
+}

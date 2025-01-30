@@ -1,6 +1,6 @@
 import {Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query} from '@nestjs/common';
 import {SpecialityService} from "./speciality.service";
-import {specialityDto} from "./dto/speciality.dto";
+import {getAllSpecialityParams, specialityDto} from "./dto/speciality.dto";
 import {ApiBody, ApiOperation, ApiResponse} from "@nestjs/swagger";
 import {specialityUpdateDto} from "./dto/specialityUpdate.dto";
 
@@ -23,12 +23,21 @@ export class SpecialityController {
         return await this.specialityService.createSpeciality(dto)
     }
 
+
+    @ApiOperation({ summary: 'getAll of exist speciality for doctors' })
+    @ApiResponse({ status: 201, description: 'Specialities got successfully.' })
+    @ApiResponse({ status: 400, description: 'Invalid request.' })
+    @Get("/get/amount")
+    async getAmount(){
+        return await this.specialityService.getSpecialityAmount()
+    }
+
     @ApiOperation({ summary: 'getAll of exist speciality for doctors' })
     @ApiResponse({ status: 201, description: 'Specialities got successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
     @Get()
-    async getAll(){
-        return await this.specialityService.getAllSpeciality()
+    async getAll(@Query() dto: getAllSpecialityParams){
+        return await this.specialityService.getAllSpeciality(dto)
     }
 
     @ApiOperation({ summary: 'getOne of  exist speciality for doctors' })
@@ -57,7 +66,7 @@ export class SpecialityController {
     @ApiOperation({ summary: 'Delete exist speciality for doctors' })
     @ApiResponse({ status: 201, description: 'Speciality deleted successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
-    @Delete()
+    @Delete("/:id")
     async delete(@Param("id") id:number){
         if(Number(id) === undefined){
             throw new HttpException({message: "id not number or not found "}, HttpStatus.BAD_REQUEST)
