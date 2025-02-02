@@ -5,6 +5,8 @@ import { AppointmentsController } from "./appointments.controller";
 import { AppointmentsModel } from "./appointments.model";
 import { PatientsModule } from "../patients/patients.module";
 import { ServicesModule } from "../services/services.module";
+import {DoctorsService} from "../doctors/doctors.service";
+import {DoctorsModule} from "../doctors/doctors.module";
 
 @Module({
   providers: [AppointmentsService],
@@ -13,6 +15,7 @@ import { ServicesModule } from "../services/services.module";
     SequelizeModule.forFeature([AppointmentsModel]),
     PatientsModule,
     ServicesModule,
+    DoctorsModule
   ],
 })
 export class AppointmentsModule {}

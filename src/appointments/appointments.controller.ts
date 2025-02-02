@@ -3,7 +3,7 @@ import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/s
 import { isNumber } from "@nestjs/common/utils/shared.utils";
 import { AppointmentsService } from "./appointments.service";
 import { AppointmentsDto } from "./dto/appointments.dto";
-import { GetAppointmentsDto } from "./dto/get-appointments.dto";
+import {GetAppointmentsDto, getBookedTime} from "./dto/get-appointments.dto";
 import { CreateAppointmentsDto } from "./dto/create-appointments.dto";
 
 @ApiTags('Appointments')
@@ -22,6 +22,16 @@ export class AppointmentsController {
             throw new HttpException({ message: 'Doctor ID or Patient ID is required.' }, HttpStatus.BAD_REQUEST);
         }
         return await this.appointmentsService.createAppointment(dto);
+    }
+
+
+
+    @Get("/get/amount")
+    @ApiOperation({ summary: 'Get Amount of Appointments' })
+    @ApiResponse({ status: 200, description: 'Amount successfully retrieved.' })
+    @ApiResponse({ status: 400, description: 'Bad request' })
+    async getAmount() {
+        return await this.appointmentsService.getAppointmentsAmount();
     }
 
     @Get()
@@ -44,7 +54,7 @@ export class AppointmentsController {
     @ApiResponse({ status: 400, description: 'Bad request' })
     @Get('/:id')
     async getOne(@Param('id') appointment_id: number) {
-        if (!isNumber(appointment_id)) {
+        if (!isNumber(Number(appointment_id))) {
             throw new HttpException({ message: 'Appointment ID must be a number.' }, HttpStatus.BAD_REQUEST);
         }
         return await this.appointmentsService.getOneAppointment(appointment_id);
@@ -55,7 +65,8 @@ export class AppointmentsController {
     @ApiResponse({ status: 400, description: 'Bad request' })
     @Delete('/:id')
     async delete(@Param('id') appointment_id: number) {
-        if (!isNumber(appointment_id)) {
+        console.log(appointment_id)
+        if (!isNumber(Number(appointment_id))) {
             throw new HttpException({ message: 'Appointment ID must be a number.' }, HttpStatus.BAD_REQUEST);
         }
         return await this.appointmentsService.deleteAppointment(appointment_id);
@@ -71,5 +82,16 @@ export class AppointmentsController {
             throw new HttpException({ message: 'Appointment ID is required.' }, HttpStatus.BAD_REQUEST);
         }
         return await this.appointmentsService.updateAppointment(dto);
+    }
+
+    @ApiOperation({ summary: 'Get all bookedTime of Appointment that one doctor'})
+    @ApiResponse({ status: 200, description: 'BookedTime successfully got.' })
+    @ApiResponse({ status: 400, description: 'Bad request' })
+    @Get("/get/bookedTime")
+    async getBookedTime(@Query() dto: getBookedTime){
+        if(isNumber(Number(dto.doctor_id))){
+
+            return await this.appointmentsService.getAllBookedTimeOnDate(dto)
+        }
     }
 }

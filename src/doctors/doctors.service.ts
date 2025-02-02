@@ -51,31 +51,61 @@ export class DoctorsService {
     async getAllDoctors(params: getAllDoctorParams){
         try {
 
-            let doctors = await this.doctorsRepository.findAll({
-                limit: params.limit || 5,
-                offset: (params.page-1 || 0)*(params.limit || 0),
-                include: [
-                    {
-                        model:RolesModel,
-                        attributes: ["id", "role"],
-                    },
-                    {
-                        model: RatingsModel,
-                        attributes: ["id", "rating"],
-                    },
-                    {
-                        model: AppointmentsModel,
-                    },
-                    {
-                        model: SpecialityModel,
-                    }
-                ],
-                attributes: {exclude: [
-                        "password",
-                        "createdAt",
-                        "updatedAt",
-                    ]}
-            });
+            let doctors: DoctorsModel[] = []
+
+            if(Number(params.limit) !== 0){
+                doctors =  await this.doctorsRepository.findAll({
+                    limit: params.limit || 5,
+                    offset: (params.page-1 || 0)*(params.limit || 0),
+                    include: [
+                        {
+                            model:RolesModel,
+                            attributes: ["id", "role"],
+                        },
+                        {
+                            model: RatingsModel,
+                            attributes: ["id", "rating"],
+                        },
+                        {
+                            model: AppointmentsModel,
+                        },
+                        {
+                            model: SpecialityModel,
+                        }
+                    ],
+                    attributes: {exclude: [
+                            "password",
+                            "createdAt",
+                            "updatedAt",
+                        ]}
+                });
+
+            }else{
+                console.log("ХФІВХФІВХФІХФВХ")
+                doctors =  await this.doctorsRepository.findAll({
+                    include: [
+                        {
+                            model:RolesModel,
+                            attributes: ["id", "role"],
+                        },
+                        {
+                            model: RatingsModel,
+                            attributes: ["id", "rating"],
+                        },
+                        {
+                            model: AppointmentsModel,
+                        },
+                        {
+                            model: SpecialityModel,
+                        }
+                    ],
+                    attributes: {exclude: [
+                            "password",
+                            "createdAt",
+                            "updatedAt",
+                        ]}
+                });
+            }
 
             if(params.role && doctors.length > 0){
                 doctors = doctors.filter((values)=>values.roles.some((value)=>value.role === params.role));
@@ -89,8 +119,13 @@ export class DoctorsService {
         }
     }
 
-    async getOneDoctor(doctor_id:number){
+    async getOneDoctor(doctor_id:number, all?: boolean){
         try {
+
+            if(all){
+                return await this.doctorsRepository.findByPk(Number(doctor_id),{include: {all: true}})
+            }
+
           const doctor = await this.doctorsRepository.findByPk(doctor_id, {include: [
                   {
                       model: RolesModel,
@@ -274,6 +309,7 @@ export class DoctorsService {
             console.log(e)
         }
     }
+
 
 
 

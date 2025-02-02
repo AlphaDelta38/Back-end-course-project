@@ -19,7 +19,7 @@ export class ServicesService {
 
     async getAllServices(dto: getAllServicesParams) {
         try {
-            if(dto.limit){
+            if(Number(dto.limit)){
                 return await this.servicesRepository.findAll({
                     limit: dto.limit,
                     offset: ((dto.page-1) || 0) * dto.limit,

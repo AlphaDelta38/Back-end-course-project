@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import {Column, DataType} from "sequelize-typescript";
 
 export class AppointmentsDto {
     @ApiProperty({ example: 1, description: 'Unique Appointment id.' })
@@ -24,6 +25,9 @@ export class AppointmentsDto {
 
     @ApiProperty({ example: 'Paracetamol', description: 'Prescribed medication.' })
     prescription?: string;
+
+    @ApiProperty({ example: "9:30", description: 'time of appointments' })
+    time: string;
 
     @ApiProperty({ example: true, description: 'Status of the appointment (true for active, false for canceled)' })
     status: boolean;

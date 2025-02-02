@@ -20,7 +20,7 @@ export class DiagnosesService {
     async getAllDiagnoses(dto: getAllDiagnosesParams) {
         try {
 
-            if(dto.limit){
+            if(Number(Number(dto.limit))){
                 return await this.diagnosesRepository.findAll({limit: dto.limit, offset: (dto.page-1) * dto.limit});
             }else{
                 return await this.diagnosesRepository.findAll();
