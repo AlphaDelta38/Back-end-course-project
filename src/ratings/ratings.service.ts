@@ -4,6 +4,8 @@ import { RatingsModel } from "./ratings.model";
 import { CreateRatingsDto } from "./dto/create-ratings.dto";
 import { RatingsDto } from "./dto/ratings.dto";
 import { GetRatingsDto } from "./dto/get-ratings.dto";
+import {DoctorsModel} from "../doctors/doctors.model";
+import {PatientsModel} from "../patients/patients.model";
 
 @Injectable()
 export class RatingsService {
@@ -45,7 +47,23 @@ export class RatingsService {
                     include: { all: true }
                 });
             } else {
-                return await this.ratingsRepository.findAll({ include: { all: true } });
+                if(Number(dto.limit)){
+                    return await this.ratingsRepository.findAll({
+                        limit: dto.limit,
+                        offset: ((dto.page-1) || 0) * dto.limit,
+                        include: [
+                            {model: DoctorsModel,attributes: ["first_name", "last_name"]},
+                            {model: PatientsModel,attributes: ["first_name", "last_name"]},
+                        ],
+                    });
+                }else{
+                    return await this.ratingsRepository.findAll({
+                        include: [
+                            {model: DoctorsModel,attributes: ["first_name", "last_name"]},
+                            {model: PatientsModel,attributes: ["first_name", "last_name"]},
+                        ]
+                    })
+                }
             }
         } catch (e) {
             throw new HttpException({ message: e }, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -54,7 +72,7 @@ export class RatingsService {
 
     async getOneRating(rating_id:number){
         try {
-          const rating = await this.ratingsRepository.findByPk(rating_id);
+          const rating = await this.ratingsRepository.findByPk(Number(rating_id));
           if(!rating){
               throw new HttpException({message: 'Rating not found.'}, HttpStatus.INTERNAL_SERVER_ERROR);
           }
@@ -79,4 +97,18 @@ export class RatingsService {
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    async getAmountOfRatings(){
+        try {
+            const response = await this.ratingsRepository.findAll()
+            if(!response){
+                return 0
+            }
+            return response.length
+        }catch (e){
+            throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

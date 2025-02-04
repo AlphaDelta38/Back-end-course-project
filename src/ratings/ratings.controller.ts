@@ -19,6 +19,7 @@ export class RatingsController {
     @ApiBody({ type: CreateRatingsDto, description: 'Data for creating a new rating, including doctor and patient IDs, and rating score.' })
     async create(@Body() dto: CreateRatingsDto) {
         try {
+            console.log(dto)
             if (!dto.doctor_id || !dto.patient_id || dto.rating === undefined) {
                 throw new HttpException({ message: 'doctor_id, patient_id, and rating are required fields.' }, HttpStatus.BAD_REQUEST);
             }
@@ -41,6 +42,15 @@ export class RatingsController {
             throw new HttpException({ message: 'Type of entity is required when ID is specified.' }, HttpStatus.BAD_REQUEST);
         }
         return await this.ratingsService.getAllRatings(dto);
+    }
+
+
+    @ApiOperation({ summary: 'Get amount of  ratings' })
+    @ApiResponse({ status: 200, description: 'Amount of Rating successfully retrieved.' })
+    @ApiResponse({ status: 400, description: 'Bad request' })
+    @Get("/get/amount")
+    async getAmount() {
+        return await this.ratingsService.getAmountOfRatings();
     }
 
     @ApiOperation({ summary: 'Retrieve a rating by ID' })
