@@ -12,7 +12,9 @@ export class JwtAuthGuard implements CanActivate {
         const req = context.switchToHttp().getRequest()
 
         try {
+
             const headerAuthorization = req.headers.authorization;
+
             if(!headerAuthorization){
                 throw new HttpException({message: 'User has not been aoutorizated'}, HttpStatus.BAD_REQUEST)
             }
@@ -24,6 +26,7 @@ export class JwtAuthGuard implements CanActivate {
             }
 
             const user =  this.jwtService.verify(token);
+
             req.user = user;
 
             return true;

@@ -3,14 +3,15 @@ import { Observable } from "rxjs";
 import { Reflector } from "@nestjs/core";
 import { ROLES_KEY } from "./roles.decorator";
 import { RolesModel } from "./roles.model";
+import {RoutesService} from "../routes/routes.service";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
 
-    constructor(private reflector: Reflector) {
+    constructor(private reflector: Reflector, private routeService: RoutesService) {
     }
 
-    canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+    async canActivate(context: ExecutionContext): Promise<boolean> {
         try {
             const req = context.switchToHttp().getRequest()
             const requiredRoles: string[] = this.reflector.getAllAndOverride(ROLES_KEY, [
@@ -27,10 +28,25 @@ export class RolesGuard implements CanActivate {
                 return false
             }
 
-            return roles.some(value => requiredRoles.includes(value.role))
+            const results = await Promise.all(roles.map(role => this.checkRole(role.id)));
+
+            if(results[0]?.routes){
+                for (const roleAccess of results){
+                    if(roleAccess.routes.includes(requiredRoles[0])){
+                        return true
+                    }
+                }
+            }
+
+            return false
         }catch (e){
             throw  new HttpException({message: e}, HttpStatus.FORBIDDEN)
         }
     }
+
+    async checkRole(id:number){
+        return await this.routeService.getOneById(id)
+    }
+
 
 }

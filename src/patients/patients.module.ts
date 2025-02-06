@@ -10,12 +10,6 @@ import { JwtModule } from "@nestjs/jwt";
   providers: [PatientsService], 
   imports: [
     SequelizeModule.forFeature([PatientsModel]),
-    JwtModule.register({
-      secret: process.env.SECRET_KEY || 'secret_key',
-      signOptions: {
-        expiresIn: '24h'
-      }
-    }),
   ],
   exports: [PatientsService]
 })

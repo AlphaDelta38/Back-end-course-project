@@ -30,6 +30,8 @@ export class PatientsController {
     @ApiOperation({ summary: 'Create a new patient' })
     @ApiResponse({ status: 201, description: 'Patient created successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
+    @Roles("POST /patients")
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Post()
     @ApiBody({ type: CreatePatientsDto })
     async create(@Body() dto: CreatePatientsDto) {
@@ -47,7 +49,6 @@ export class PatientsController {
     @ApiOperation({ summary: 'getting lenght of all patient'})
     @ApiResponse({ status: 200, description: 'Patients Amount got successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
-    @Roles("doctor")
     @Get("/get/amount")
     async getAmount() {
         try {
@@ -61,7 +62,6 @@ export class PatientsController {
     @ApiOperation({ summary: 'Retrieve all patients' })
     @ApiResponse({ status: 200, description: 'Patients retrieved successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
-    @Roles("doctor")
     @Get()
     async getAll(@Query() dto: GetPatientsDto) {
         try {
@@ -89,6 +89,8 @@ export class PatientsController {
     @ApiOperation({ summary: 'Delete a patient by ID' })
     @ApiResponse({ status: 200, description: 'Patient deleted successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid ID or request.' })
+    @Roles("DELETE /patients/:id")
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Delete('/:id')
     async delete(@Param('id') id: number) {
         try {
@@ -104,6 +106,8 @@ export class PatientsController {
     @ApiOperation({ summary: 'Update patient details' })
     @ApiResponse({ status: 200, description: 'Patient updated successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
+    @Roles("PUT /patients")
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Put()
     @ApiBody({ type: PatientsDto })
     async update(@Body() dto: PatientsDto) {

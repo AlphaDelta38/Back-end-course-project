@@ -1,10 +1,26 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpException,
+    HttpStatus,
+    Param,
+    Post,
+    Put,
+    Query,
+    UseGuards
+} from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { isNumber } from "@nestjs/common/utils/shared.utils";
 import { RatingsService } from "./ratings.service";
 import { CreateRatingsDto } from "./dto/create-ratings.dto";
 import { RatingsDto } from "./dto/ratings.dto";
 import { GetRatingsDto } from "./dto/get-ratings.dto";
+import {specialityDto} from "../speciality/dto/speciality.dto";
+import {Roles} from "../roles/roles.decorator";
+import {JwtAuthGuard} from "../auth/jwt-auth.guard";
+import {RolesGuard} from "../roles/roles.guard";
 
 @ApiTags('Ratings')
 @Controller('ratings')
@@ -15,6 +31,9 @@ export class RatingsController {
     @ApiOperation({ summary: 'Create a new rating' })
     @ApiResponse({ status: 201, description: 'The rating has been successfully created.' })
     @ApiResponse({ status: 400, description: 'The request is invalid or missing required fields.' })
+    @ApiBody({type: specialityDto})
+    @Roles("POST /ratings")
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Post()
     @ApiBody({ type: CreateRatingsDto, description: 'Data for creating a new rating, including doctor and patient IDs, and rating score.' })
     async create(@Body() dto: CreateRatingsDto) {
@@ -71,6 +90,8 @@ export class RatingsController {
     @ApiOperation({ summary: 'Delete a rating by ID' })
     @ApiResponse({ status: 200, description: 'The rating has been deleted successfully.' })
     @ApiResponse({ status: 400, description: 'The ID is invalid or the request cannot be processed.' })
+    @Roles("DELETE /ratings/:id")
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Delete('/:id')
     async delete(@Param('id') id: number) {
         try {
@@ -86,6 +107,8 @@ export class RatingsController {
     @ApiOperation({ summary: 'Update an existing rating' })
     @ApiResponse({ status: 200, description: 'The rating has been updated successfully.' })
     @ApiResponse({ status: 400, description: 'The update request is invalid or missing required fields.' })
+    @Roles("PUT /ratings")
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Put()
     @ApiBody({ type: RatingsDto, description: 'Data for updating an existing rating, including the rating ID and updated information.' })
     async update(@Body() dto: RatingsDto) {

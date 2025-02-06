@@ -1,9 +1,24 @@
-import {Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query} from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpException,
+    HttpStatus,
+    Param,
+    Post,
+    Put,
+    Query,
+    UseGuards
+} from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { isNumber } from "@nestjs/common/utils/shared.utils";
 import { NewsService } from "./news.service";
 import { CreateNewsDto } from "./dto/create-news.dto";
 import {NewsDto, params} from "./dto/news.dto";
+import {Roles} from "../roles/roles.decorator";
+import {JwtAuthGuard} from "../auth/jwt-auth.guard";
+import {RolesGuard} from "../roles/roles.guard";
 
 @ApiTags('News')
 @Controller('news')
@@ -14,6 +29,8 @@ export class NewsController {
     @ApiOperation({ summary: 'Create a news article' })
     @ApiResponse({ status: 201, description: 'News article created successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
+    @Roles("POST /news")
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Post()
     @ApiBody({ type: CreateNewsDto })
     async create(@Body() dto: CreateNewsDto) {
@@ -69,6 +86,8 @@ export class NewsController {
     @ApiOperation({ summary: 'Delete a news article by ID' })
     @ApiResponse({ status: 200, description: 'News article deleted successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid ID or request.' })
+    @Roles("DELETE /news/:id")
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Delete('/:id')
     async delete(@Param('id') id: number) {
         try {
@@ -84,6 +103,8 @@ export class NewsController {
     @ApiOperation({ summary: 'Update a news article' })
     @ApiResponse({ status: 200, description: 'News article updated successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
+    @Roles("PUT /news")
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Put()
     @ApiBody({ type: NewsDto })
     async update(@Body() dto: NewsDto) {

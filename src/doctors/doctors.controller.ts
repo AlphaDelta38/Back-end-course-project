@@ -1,10 +1,25 @@
-import {Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpException,
+    HttpStatus,
+    Param,
+    Post,
+    Put,
+    Query,
+    UseGuards
+} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { isNumber } from "@nestjs/common/utils/shared.utils";
 import { DoctorsService } from "./doctors.service";
 import { CreateDoctorsDto } from "./dto/create-doctor.dto";
 import {DoctorsDto, getAllDoctorParams} from "./dto/doctor.dto";
 import { SetDoctorsRolesDto} from "./dto/set-doctors-roles.dto";
+import {Roles} from "../roles/roles.decorator";
+import {JwtAuthGuard} from "../auth/jwt-auth.guard";
+import {RolesGuard} from "../roles/roles.guard";
 
 @ApiTags('Doctors')
 @Controller('doctors')
@@ -15,6 +30,8 @@ export class DoctorsController {
     @ApiOperation({ summary: 'Create a new doctor' })
     @ApiResponse({ status: 201, description: 'Doctor created successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
+    @Roles("POST /doctors")
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Post()
     @ApiBody({ type: CreateDoctorsDto })
     async create(@Body() dto: CreateDoctorsDto) {
@@ -58,6 +75,8 @@ export class DoctorsController {
     @ApiOperation({ summary: 'Delete a doctor by ID' })
     @ApiResponse({ status: 200, description: 'Doctor deleted successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid ID or request.' })
+    @Roles("DELETE /doctors/:id")
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Delete("/:id")
     async delete(@Param('id') id: number) {
         try {
@@ -73,6 +92,8 @@ export class DoctorsController {
     @ApiOperation({ summary: 'Update doctor details' })
     @ApiResponse({ status: 200, description: 'Doctor updated successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
+    @Roles("PUT /doctors")
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Put()
     @ApiBody({ type: DoctorsDto })
     async update(@Body() dto: DoctorsDto) {
@@ -90,6 +111,8 @@ export class DoctorsController {
     @ApiOperation({ summary: 'set roles for  doctor ' })
     @ApiResponse({ status: 200, description: 'Doctor role successfully set.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
+    @Roles("POST /doctors/roles")
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Post("/roles")
     @ApiBody({ type: SetDoctorsRolesDto })
     async setDoctorRole(@Body() dto: SetDoctorsRolesDto) {

@@ -1,9 +1,24 @@
-import {Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query} from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpException,
+    HttpStatus,
+    Param,
+    Post,
+    Put,
+    Query,
+    UseGuards
+} from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { isNumber } from "@nestjs/common/utils/shared.utils";
 import { DiagnosesService } from "./diagnoses.service";
 import { CreateDiagnosesDto } from "./dto/create-diagnoses.dto";
 import {DiagnosesDto, getAllDiagnosesParams} from "./dto/diagnoses.dto";
+import {Roles} from "../roles/roles.decorator";
+import {JwtAuthGuard} from "../auth/jwt-auth.guard";
+import {RolesGuard} from "../roles/roles.guard";
 
 @ApiTags('Diagnoses')
 @Controller('diagnoses')
@@ -14,6 +29,8 @@ export class DiagnosesController {
     @ApiOperation({ summary: 'Create a new diagnosis' })
     @ApiResponse({ status: 201, description: 'Diagnosis successfully created.' })
     @ApiResponse({ status: 400, description: 'Invalid input data.' })
+    @Roles("POST /diagnoses")
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Post()
     @ApiBody({ type: CreateDiagnosesDto })
     async create(@Body() dto: CreateDiagnosesDto) {
@@ -71,6 +88,8 @@ export class DiagnosesController {
     @ApiOperation({ summary: 'Delete a diagnosis by ID' })
     @ApiResponse({ status: 200, description: 'Diagnosis deleted successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid ID or request.' })
+    @Roles("POST /diagnoses/:id")
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Delete("/:id")
     async delete(@Param('id') diagnosis_id: number) {
         try {
@@ -86,6 +105,8 @@ export class DiagnosesController {
     @ApiOperation({ summary: 'Update an existing diagnosis' })
     @ApiResponse({ status: 200, description: 'Diagnosis updated successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid input data.' })
+    @Roles("PUT /diagnoses")
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Put()
     @ApiBody({ type: DiagnosesDto })
     async update(@Body() dto: DiagnosesDto) {

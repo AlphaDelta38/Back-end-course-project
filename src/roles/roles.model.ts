@@ -1,7 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, DataType, Table, BelongsToMany, Model } from "sequelize-typescript";
+import {Column, DataType, Table, BelongsToMany, Model, BelongsTo, HasMany, HasOne} from "sequelize-typescript";
 import { DoctorsModel } from "../doctors/doctors.model";
 import { DoctorsRolesModel } from "./doctors-roles.model";
+import {RoutesAccessModel} from "../routes/routes-access.model";
 
 interface RolesInterface {
     id: number;
@@ -21,4 +22,7 @@ export class RolesModel extends Model<RolesModel, RolesInterface> {
 
     @BelongsToMany(() => DoctorsModel, () => DoctorsRolesModel)
     doctors: DoctorsModel[];
+
+    @HasOne(() => RoutesAccessModel, { foreignKey: "role_id" })
+    routeAccess: RoutesAccessModel;
 }

@@ -11,13 +11,16 @@ import * as process from "process";
 import {RatingsModel} from "../ratings/ratings.model";
 import {AppointmentsModel} from "../appointments/appointments.model";
 import {SpecialityModel} from "../speciality/speciality.model";
+import {firstValueFrom} from "rxjs";
+import {HttpService} from "@nestjs/axios";
+import {RoutesService} from "../routes/routes.service";
 
 
 @Injectable()
 export class DoctorsService {
 
     constructor(
-        @InjectModel(DoctorsModel) private  doctorsRepository: typeof DoctorsModel, private roleService: RolesService) {}
+        @InjectModel(DoctorsModel) private  doctorsRepository: typeof DoctorsModel, private roleService: RolesService, private readonly routesService: RoutesService) {}
 
     async createDoctor(dto: CreateDoctorsDto){
         try {
@@ -288,6 +291,7 @@ export class DoctorsService {
             const adminEmail = process.env.ADMIN_EMAIL;
             const existingAdmin = await this.getDoctorByEmail(adminEmail);
 
+
             if (!existingAdmin) {
                 const adminRole = await this.roleService.getOneRole(0, process.env.ADMIN_ROLE)
                     || await this.roleService.createRole({ role: process.env.ADMIN_ROLE });
@@ -304,6 +308,8 @@ export class DoctorsService {
 
                 const adminDoctor = await this.doctorsRepository.create(adminDoctorDto);
                 await this.setDoctorRoles({ doctor_id: adminDoctor.id, roles_id: [adminRole.id] });
+                const routes:string[] = await this.routesService.getRoutes()
+                await this.routesService.createRolesAccess({role_id: adminRole.id, routes: routes})
             }
         }catch (e){
             console.log(e)

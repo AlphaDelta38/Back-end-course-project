@@ -1,8 +1,23 @@
-import {Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpException,
+    HttpStatus,
+    Param,
+    Post,
+    Put,
+    Query,
+    UseGuards
+} from '@nestjs/common';
 import {SpecialityService} from "./speciality.service";
 import {getAllSpecialityParams, specialityDto} from "./dto/speciality.dto";
 import {ApiBody, ApiOperation, ApiResponse} from "@nestjs/swagger";
 import {specialityUpdateDto} from "./dto/specialityUpdate.dto";
+import {Roles} from "../roles/roles.decorator";
+import {JwtAuthGuard} from "../auth/jwt-auth.guard";
+import {RolesGuard} from "../roles/roles.guard";
 
 @Controller('speciality')
 export class SpecialityController {
@@ -15,6 +30,8 @@ export class SpecialityController {
     @ApiResponse({ status: 201, description: 'Speciality created successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
     @ApiBody({type: specialityDto})
+    @Roles("POST /speciality")
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Post()
     async create(@Body() dto: specialityDto){
         if(!dto.name){
@@ -55,6 +72,8 @@ export class SpecialityController {
     @ApiResponse({ status: 201, description: 'Speciality updated successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
     @ApiBody({type: specialityDto})
+    @Roles("PUT /speciality")
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Put()
     async update(@Body() dto: specialityUpdateDto){
         if(!dto.name){
@@ -66,6 +85,8 @@ export class SpecialityController {
     @ApiOperation({ summary: 'Delete exist speciality for doctors' })
     @ApiResponse({ status: 201, description: 'Speciality deleted successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
+    @ApiBody({type: specialityDto})
+    @Roles("DELETE /speciality/:id")
     @Delete("/:id")
     async delete(@Param("id") id:number){
         if(Number(id) === undefined){

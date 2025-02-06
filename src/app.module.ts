@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import {INestApplication, Module} from '@nestjs/common';
 import * as process from "process";
 import { ConfigModule } from "@nestjs/config";
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -22,6 +22,10 @@ import { RatingsModel } from './ratings/ratings.model';
 import { RatingsModule } from './ratings/ratings.module';
 import { SpecialityModule } from './speciality/speciality.module';
 import {SpecialityModel} from "./speciality/speciality.model";
+import { RoutesModule } from './routes/routes.module';
+import {RoutesAccessModel} from "./routes/routes-access.model";
+import {JWTModule} from "./auth/JWT.module";
+
 
 @Module({
   imports: [
@@ -47,6 +51,7 @@ import {SpecialityModel} from "./speciality/speciality.model";
           DoctorsRolesModel,
           RatingsModel,
           SpecialityModel,
+          RoutesAccessModel,
       ],
       autoLoadModels: true,
     }),
@@ -60,6 +65,8 @@ import {SpecialityModel} from "./speciality/speciality.model";
     RolesModule,
     RatingsModule,
     SpecialityModule,
+    RoutesModule,
+      JWTModule,
   ],
   controllers: [],
   providers: [],

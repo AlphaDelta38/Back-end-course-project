@@ -1,10 +1,25 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpException,
+    HttpStatus,
+    Param,
+    Post,
+    Put,
+    Query,
+    UseGuards
+} from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { isNumber } from "@nestjs/common/utils/shared.utils";
 import { AppointmentsService } from "./appointments.service";
 import { AppointmentsDto } from "./dto/appointments.dto";
 import {GetAppointmentsDto, getBookedTime} from "./dto/get-appointments.dto";
 import { CreateAppointmentsDto } from "./dto/create-appointments.dto";
+import {Roles} from "../roles/roles.decorator";
+import {JwtAuthGuard} from "../auth/jwt-auth.guard";
+import {RolesGuard} from "../roles/roles.guard";
 
 @ApiTags('Appointments')
 @Controller('appointments')
@@ -63,6 +78,8 @@ export class AppointmentsController {
     @ApiOperation({ summary: 'Delete a specific appointment' })
     @ApiResponse({ status: 200, description: 'Appointment successfully deleted.' })
     @ApiResponse({ status: 400, description: 'Bad request' })
+    @Roles("DELETE /appointments/:id")
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Delete('/:id')
     async delete(@Param('id') appointment_id: number) {
         console.log(appointment_id)
@@ -75,6 +92,8 @@ export class AppointmentsController {
     @ApiOperation({ summary: 'Update a specific appointment' })
     @ApiResponse({ status: 200, description: 'Appointment successfully updated.' })
     @ApiResponse({ status: 400, description: 'Bad request' })
+    @Roles("PUT /appointments")
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Put()
     @ApiBody({ type: AppointmentsDto })
     async update(@Body() dto: AppointmentsDto) {
