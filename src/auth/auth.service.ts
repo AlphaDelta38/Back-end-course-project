@@ -70,7 +70,8 @@ export class AuthService {
 
     async checkAuth(user: PatientsModel | DoctorsModel) {
         try {
-            if(user instanceof PatientsModel) {
+            //@ts-ignore
+            if(!user?.roles) {
                 const patient = await this.patientService.getOnePatient(user.id)
                 return this.generateToken(patient)
             }else{

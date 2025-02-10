@@ -14,6 +14,7 @@ import {SpecialityModel} from "../speciality/speciality.model";
 import {firstValueFrom} from "rxjs";
 import {HttpService} from "@nestjs/axios";
 import {RoutesService} from "../routes/routes.service";
+import {changePassword} from "../patients/dto/change-password.dto";
 
 
 @Injectable()
@@ -47,6 +48,7 @@ export class DoctorsService {
 
             return doctor;
         }catch (e){
+            console.log(e)
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -84,7 +86,6 @@ export class DoctorsService {
                 });
 
             }else{
-                console.log("ХФІВХФІВХФІХФВХ")
                 doctors =  await this.doctorsRepository.findAll({
                     include: [
                         {
@@ -176,34 +177,36 @@ export class DoctorsService {
             }
 
             let newHashPassword;
-            if(dto.password){
+            if(dto?.password){
                 newHashPassword =  await bcrypt.hash(dto.password, 5);
             }
 
+            if(dto?.roles){
+                const willDelete:number[]= [];
 
-            const willDelete:number[]= [];
-
-            doctor.roles.forEach((value)=>{
-                if(!roles.includes(value.role)){
-                    willDelete.push(value.id)
-                }
-            })
-
-            for (const value of willDelete){
-                const errorCheck = await this.deleteRole(doctor.id, value)
-            }
-
-            const needRoles: number[] = []
-
-            if(roles.length > 0){
-                let allRoles = await this.roleService.getAllRoles()
-                allRoles = allRoles.filter((values)=>roles.includes(values.role))
-                allRoles.forEach((value)=>{
-                    needRoles.push(value.id)
+                doctor.roles.forEach((value)=>{
+                    if(!roles.includes(value.role)){
+                        willDelete.push(value.id)
+                    }
                 })
-            }
 
-            await this.setDoctorRoles({doctor_id: doctor.id, roles_id: needRoles})
+                for (const value of willDelete){
+                    const errorCheck = await this.deleteRole(doctor.id, value)
+                }
+
+                const needRoles: number[] = []
+
+                if(roles.length > 0){
+                    let allRoles = await this.roleService.getAllRoles()
+                    allRoles = allRoles.filter((values)=>roles.includes(values.role))
+                    allRoles.forEach((value)=>{
+                        needRoles.push(value.id)
+                    })
+                }
+
+                await this.setDoctorRoles({doctor_id: doctor.id, roles_id: needRoles})
+
+            }
 
             let updatedDoctor;
 
@@ -213,7 +216,6 @@ export class DoctorsService {
                  updatedDoctor = await this.doctorsRepository.update(doctorData, {where: {id: doctor.id}})
 
             }
-
             return updatedDoctor;
         }catch (e){
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -317,6 +319,22 @@ export class DoctorsService {
     }
 
 
+    async updateForSelf(dto: Omit<DoctorsDto, "id">, id: number){
+        return this.updateDoctor({...dto, id})
+    }
+
+
+    async changePasswordSelf(dto: changePassword , id: number ){
+
+        const patient = await this.getOneDoctor(id)
+
+        if(await bcrypt.compare(dto.currentPassword, patient.password)){
+            const hashedNewPassword = await bcrypt.hash(dto.newPassword, 5)
+            return await this.doctorsRepository.update({password: hashedNewPassword}, {where: {id: id}});
+        }else{
+            throw new HttpException({message: "current password is wrong"}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
 }

@@ -8,7 +8,7 @@ import {
     Param,
     Post,
     Put,
-    Query,
+    Query, Req, Res,
     UseGuards
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -20,6 +20,7 @@ import { SetDoctorsRolesDto} from "./dto/set-doctors-roles.dto";
 import {Roles} from "../roles/roles.decorator";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 import {RolesGuard} from "../roles/roles.guard";
+import {changePassword} from "../patients/dto/change-password.dto";
 
 @ApiTags('Doctors')
 @Controller('doctors')
@@ -89,6 +90,20 @@ export class DoctorsController {
         }
     }
 
+    @ApiOperation({ summary: 'Update user or doctor with JWT token, himself , and only for they ' })
+    @ApiResponse({ status: 200, description: 'Update  successfully got.' })
+    @ApiResponse({ status: 400, description: 'Invalid request.' })
+    @UseGuards(JwtAuthGuard)
+    @Put("/updateSelf")
+    async updateOnlyByJWT(@Body() dto: Omit<DoctorsDto, "id">, @Req() req) {
+        try {
+            return await this.doctorsService.updateForSelf(dto, req.user.id || 0);
+        } catch (e) {
+            throw new HttpException({ message: e.message || "Failed to update doctor ." }, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
     @ApiOperation({ summary: 'Update doctor details' })
     @ApiResponse({ status: 200, description: 'Doctor updated successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid request.' })
@@ -98,11 +113,13 @@ export class DoctorsController {
     @ApiBody({ type: DoctorsDto })
     async update(@Body() dto: DoctorsDto) {
         try {
+
             if (!dto.id) {
                 throw new HttpException({ message: "ID is required for update." }, HttpStatus.BAD_REQUEST);
             }
             return await this.doctorsService.updateDoctor(dto);
         } catch (e) {
+
             throw new HttpException({ message: e.message || "Failed to update doctor." }, HttpStatus.BAD_REQUEST);
         }
     }
@@ -137,5 +154,21 @@ export class DoctorsController {
             throw new HttpException({ message: e.message || "Failed to get amount." }, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @ApiOperation({ summary: 'change password details' })
+    @ApiResponse({ status: 200, description: 'password updated successfully.' })
+    @ApiResponse({ status: 400, description: 'Invalid request.' })
+    @UseGuards(JwtAuthGuard)
+    @Put("/updateSelf/password")
+    @ApiBody({ type: changePassword })
+    async updatePasswordSelf(@Body() dto: changePassword, @Req() req) {
+        try {
+            return await this.doctorsService.changePasswordSelf(dto, req.user.id);
+        } catch (e) {
+            throw new HttpException({ message: e.message || 'Failed to update patient.' }, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 
 }

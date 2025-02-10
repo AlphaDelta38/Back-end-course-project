@@ -41,11 +41,12 @@ export class AppointmentsController {
 
 
 
-    @Get("/get/amount")
+
     @ApiOperation({ summary: 'Get Amount of Appointments' })
     @ApiResponse({ status: 200, description: 'Amount successfully retrieved.' })
     @ApiResponse({ status: 400, description: 'Bad request' })
-    async getAmount() {
+    @Get("/get/amount")
+    async getAmount(@Query() dto:GetAppointmentsDto) {
         return await this.appointmentsService.getAppointmentsAmount();
     }
 

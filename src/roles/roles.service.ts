@@ -24,9 +24,9 @@ export class RolesService {
 
     async getAllRoles(dto?: RolesParamsDto){
         try {
-            if(dto.all === "true"){
+            if(dto?.all === "true"){
                 return await this.rolesRepository.findAll({include: {all: true}});
-            }else if(dto.limit){
+            }else if(dto?.limit){
                 return await this.rolesRepository.findAll({
                     limit: dto.limit,
                     offset: ((dto.page-1) || 0) * dto.limit

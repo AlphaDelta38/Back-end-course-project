@@ -47,7 +47,7 @@ export class AppointmentsService {
     async getAllAppointments(dto: GetAppointmentsDto) {
         try {
             if (dto.type === 'doctor') {
-                if(Number(dto.limit)){
+                if(Number(dto?.limit)){
                     return await this.appointmentsRepository.findAll({
                         order: [["id", "ASC"]],
                         limit: dto.limit,
@@ -62,8 +62,9 @@ export class AppointmentsService {
                         include: { all: true }
                     });
                 }
-            } else if (dto.type === 'patient') {
-                if(Number(dto.limit)){
+            } else if (dto?.type === 'patient') {
+                if(Number(dto?.limit)){
+                    console.log("ухйхйух")
                     return await this.appointmentsRepository.findAll({
                         order: [["id", "ASC"]],
                         limit: dto.limit,
@@ -168,7 +169,21 @@ export class AppointmentsService {
     }
 
 
-    async getAppointmentsAmount(){
+    async getAppointmentsAmount(dto?: GetAppointmentsDto){
+
+        if(dto?.type && dto?.id){
+            let appointments;
+            if(dto.type === "doctor"){
+                appointments = await this.appointmentsRepository.findAll({where: {doctor_id: dto.id}});
+            }
+            if(dto.type === "patient"){
+                appointments = await this.appointmentsRepository.findAll({where: {patient_id: dto.id}});
+            }
+            if(!appointments){
+                return 0;
+            }
+        }
+
         const appointments =  await this.appointmentsRepository.findAll()
         if(!appointments){
             return 0;

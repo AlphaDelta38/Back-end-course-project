@@ -8,7 +8,7 @@ import {
     Param,
     Post,
     Put,
-    Query,
+    Query, Req,
     UseGuards
 } from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -20,6 +20,7 @@ import { PatientsDto } from "./dto/patients.dto";
 import { Roles } from "../roles/roles.decorator";
 import { RolesGuard } from "../roles/roles.guard";
 import {GetPatientsDto} from "./dto/get-patients.dto";
+import {changePassword} from "./dto/change-password.dto";
 
 @ApiTags('Patients')
 @Controller('patients')
@@ -120,4 +121,34 @@ export class PatientsController {
             throw new HttpException({ message: e.message || 'Failed to update patient.' }, HttpStatus.BAD_REQUEST);
         }
     }
+
+
+    @ApiOperation({ summary: 'Update patient details' })
+    @ApiResponse({ status: 200, description: 'Patient updated successfully.' })
+    @ApiResponse({ status: 400, description: 'Invalid request.' })
+    @UseGuards(JwtAuthGuard)
+    @Put("/updateSelf")
+    @ApiBody({ type: PatientsDto })
+    async updatePatientByJWT(@Body() dto: Omit<PatientsDto, "id">, @Req() req) {
+        try {
+            return await this.patientsService.updateForSelf(dto, req.user.id);
+        } catch (e) {
+            throw new HttpException({ message: e.message || 'Failed to update patient.' }, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @ApiOperation({ summary: 'password patient details' })
+    @ApiResponse({ status: 200, description: 'password updated successfully.' })
+    @ApiResponse({ status: 400, description: 'Invalid request.' })
+    @UseGuards(JwtAuthGuard)
+    @Put("/updateSelf/password")
+    @ApiBody({ type: changePassword })
+    async updatePasswordSelf(@Body() dto: changePassword, @Req() req) {
+        try {
+            return await this.patientsService.changePasswordSelf(dto, req.user.id);
+        } catch (e) {
+            throw new HttpException({ message: e.message || 'Failed to update patient.' }, HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

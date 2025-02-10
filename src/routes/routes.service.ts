@@ -17,9 +17,6 @@ export class RoutesService {
         if(access?.role_id === 1){
             throw new HttpException("that role cant be update for access", HttpStatus.NOT_FOUND);
         }
-
-
-
         if(access){
             return await this.updateRoleAccess(dto)
         }

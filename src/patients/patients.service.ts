@@ -6,6 +6,7 @@ import { PatientsDto } from "./dto/patients.dto";
 import * as bcrypt from "bcrypt";
 import { RolesModel } from "../roles/roles.model";
 import {GetPatientsDto} from "./dto/get-patients.dto";
+import {changePassword} from "./dto/change-password.dto";
 
 
 @Injectable()
@@ -88,4 +89,21 @@ export class PatientsService {
             throw new HttpException({message: e}, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    async updateForSelf(dto:Omit<PatientsDto, "id"> , id: number ){
+        return await this.updatePatient({...dto, id});
+    }
+
+
+    async changePasswordSelf(dto: changePassword , id: number ){
+        const patient = await this.patientsRepository.findByPk(id)
+        if(await bcrypt.compare(dto.currentPassword, patient.password)){
+            const hashedNewPassword = await bcrypt.hash(dto.newPassword, 5)
+            return await this.patientsRepository.update({password: hashedNewPassword}, {where: {id: id}});
+        }else{
+            throw new HttpException({message: "current password is wrong"}, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
