@@ -9,10 +9,10 @@ interface PatientsInterface {
     last_name: string;
     date_of_birth: Date;
     gender: string;
-    phone: string;
+    phone?: string;
     email: string;
-    address: string;
-    insurance_number: string;
+    address?: string;
+    insurance_number?: string;
     password: string;
 }
 

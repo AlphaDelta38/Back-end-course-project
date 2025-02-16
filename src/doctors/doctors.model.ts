@@ -12,13 +12,13 @@ interface DoctorsInterface {
     last_name: string;
     date_of_birth: Date;
     gender: string;
-    phone: string;
+    phone?: string;
     email: string;
-    address: string;
-    office_number: string;
+    address?: string;
+    office_number?: string;
     speciality_id: number;
     password: string;
-    image_link: string;
+    image_link?: string;
 }
 
 @Table({ tableName: 'doctors', createdAt: true, updatedAt: true })

@@ -35,10 +35,10 @@ export class PatientsService {
         }
     }
 
-    async getOnePatient(patient_id:number){
+    async getOnePatient(patient_id:number, disableErrorEvent?: boolean){
         try {
           const patient = await this.patientsRepository.findByPk(patient_id, {attributes: {exclude: ['password']}});
-          if(!patient){
+          if(!patient && !disableErrorEvent){
               throw new HttpException({message: 'Patient not found.'}, HttpStatus.INTERNAL_SERVER_ERROR);
           }
           return patient

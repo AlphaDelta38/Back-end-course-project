@@ -8,7 +8,7 @@ import {
     Param,
     Post,
     Put,
-    Query,
+    Query, Req,
     UseGuards
 } from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -32,17 +32,15 @@ export class RatingsController {
     @ApiResponse({ status: 201, description: 'The rating has been successfully created.' })
     @ApiResponse({ status: 400, description: 'The request is invalid or missing required fields.' })
     @ApiBody({type: specialityDto})
-    @Roles("POST /ratings")
-    @UseGuards(JwtAuthGuard, RolesGuard)
+    @UseGuards(JwtAuthGuard)
     @Post()
     @ApiBody({ type: CreateRatingsDto, description: 'Data for creating a new rating, including doctor and patient IDs, and rating score.' })
-    async create(@Body() dto: CreateRatingsDto) {
+    async create(@Body() dto: CreateRatingsDto, @Req() req ) {
         try {
-            console.log(dto)
             if (!dto.doctor_id || !dto.patient_id || dto.rating === undefined) {
                 throw new HttpException({ message: 'doctor_id, patient_id, and rating are required fields.' }, HttpStatus.BAD_REQUEST);
             }
-            return await this.ratingsService.createRating(dto);
+            return await this.ratingsService.createRating(dto, req.user.id);
         } catch (e) {
             throw new HttpException({ message: e.message || 'Failed to create rating.' }, HttpStatus.BAD_REQUEST);
         }

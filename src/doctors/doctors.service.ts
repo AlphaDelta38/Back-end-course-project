@@ -123,7 +123,7 @@ export class DoctorsService {
         }
     }
 
-    async getOneDoctor(doctor_id:number, all?: boolean){
+    async getOneDoctor(doctor_id:number, all?: boolean, disableErrorEvent?: boolean){
         try {
 
             if(all){
@@ -138,7 +138,7 @@ export class DoctorsService {
                       model: SpecialityModel
                   }
               ]});
-          if(!doctor){
+          if(!doctor && !disableErrorEvent){
               throw new HttpException({message: 'Doctor not found.'}, HttpStatus.INTERNAL_SERVER_ERROR);
           }
           return doctor

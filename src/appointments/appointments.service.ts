@@ -136,9 +136,17 @@ export class AppointmentsService {
         }
     }
 
-    async getOneAppointment(appointments_id: number) {
+    async getOneAppointment(appointments_id: number, user?: PatientsModel | DoctorsModel) {
         try {
             const appointment = await this.appointmentsRepository.findByPk(appointments_id, { include: { all: true } });
+
+            //@ts-ignore
+            if(!user?.roles){
+                if(appointment.patient_id !== user.id){
+                    throw new HttpException({ message: 'you have not access.' }, HttpStatus.BAD_REQUEST);
+                }
+            }
+
             if (!appointment) {
                 throw new HttpException({ message: 'Appointment not found.' }, HttpStatus.BAD_REQUEST);
             }

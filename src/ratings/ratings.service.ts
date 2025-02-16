@@ -6,14 +6,26 @@ import { RatingsDto } from "./dto/ratings.dto";
 import { GetRatingsDto } from "./dto/get-ratings.dto";
 import {DoctorsModel} from "../doctors/doctors.model";
 import {PatientsModel} from "../patients/patients.model";
+import {PatientsService} from "../patients/patients.service";
+import {DoctorsService} from "../doctors/doctors.service";
 
 @Injectable()
 export class RatingsService {
 
-    constructor(@InjectModel(RatingsModel) private  ratingsRepository: typeof RatingsModel) {}
+    constructor(@InjectModel(RatingsModel) private  ratingsRepository: typeof RatingsModel, private patientService: PatientsService, private doctorService: DoctorsService) {}
 
-    async createRating(dto: CreateRatingsDto){
+    async createRating(dto: CreateRatingsDto, requestId: number){
         try {
+
+            const patient = await this.patientService.getOnePatient(requestId, true)
+            const doctor = await this.doctorService.getOneDoctor(requestId, false, true)
+
+            if(!doctor || !doctor.roles.some((value)=>value.role === "admin")){
+                if(!patient || patient.id !== dto.patient_id){
+                    throw new HttpException({message: "You are not admin and not patient of this rating"}, HttpStatus.BAD_REQUEST);
+                }
+            }
+
             const raitignExist = await this.ratingsRepository.findOne({where: {patient_id: dto.patient_id, doctor_id: dto.doctor_id}});
             if(raitignExist){
                 const raiting = await this.updateRating(

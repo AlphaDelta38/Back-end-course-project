@@ -8,7 +8,7 @@ import {
     Param,
     Post,
     Put,
-    Query,
+    Query, Req,
     UseGuards
 } from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -68,12 +68,13 @@ export class AppointmentsController {
     @ApiOperation({ summary: 'Get a specific appointment' })
     @ApiResponse({ status: 200, description: 'Appointment successfully retrieved.' })
     @ApiResponse({ status: 400, description: 'Bad request' })
+    @UseGuards(JwtAuthGuard)
     @Get('/:id')
-    async getOne(@Param('id') appointment_id: number) {
+    async getOne(@Param('id') appointment_id: number, @Req() req) {
         if (!isNumber(Number(appointment_id))) {
             throw new HttpException({ message: 'Appointment ID must be a number.' }, HttpStatus.BAD_REQUEST);
         }
-        return await this.appointmentsService.getOneAppointment(appointment_id);
+        return await this.appointmentsService.getOneAppointment(appointment_id, req.user);
     }
 
     @ApiOperation({ summary: 'Delete a specific appointment' })
