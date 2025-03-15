@@ -53,4 +53,14 @@ export class RoutesService {
             .filter((route) => route !== undefined && !route.includes('/api') && !route.includes('/auth'));
     }
 
+    async deleteRouteAccess(roleId: number){
+        const access = await this.routesAccessRepository.findByPk(roleId)
+        if(access){
+            return await this.routesAccessRepository.destroy({where: {role_id: roleId}})
+        }else{
+            return 0
+        }
+
+    }
+
 }

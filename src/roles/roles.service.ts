@@ -5,6 +5,7 @@ import {RolesDto, RolesParamsDto} from "./dto/roles.dto";
 import { SetDoctorsRoles } from "./dto/set-doctors-roles.dto";
 import { DoctorsService } from "../doctors/doctors.service";
 import {UpdateRoleDto} from "./dto/update-role.dto";
+import {RoutesService} from "../routes/routes.service";
 
 @Injectable()
 export class RolesService {
@@ -12,6 +13,7 @@ export class RolesService {
     constructor(
         @InjectModel(RolesModel) private  rolesRepository: typeof RolesModel,
         @Inject(forwardRef(() => DoctorsService)) private doctorsService: DoctorsService,
+        private accessRoutesService: RoutesService
     ){}
 
     async createRole(dto: RolesDto){
@@ -73,7 +75,7 @@ export class RolesService {
 
     async deleteOneRole(id: number){
         try {
-
+            await this.accessRoutesService.deleteRouteAccess(Number(id))
             const role = await this.rolesRepository.findByPk(Number(id))
             if(role.role === "admin"){
                 throw new HttpException({message: 'that role cant be deleted'}, HttpStatus.BAD_REQUEST)
