@@ -19,17 +19,18 @@ export class RolesGuard implements CanActivate {
                 context.getClass(),
             ])
 
+            console.log(1)
             if(!requiredRoles){
                 return  true
             }
             const roles: RolesModel[] = req.user.roles
-
+            console.log(2)
             if(!roles){
                 return false
             }
 
             const results = await Promise.all(roles.map(role => this.checkRole(role.id)));
-
+            console.log(3)
             if(results[0]?.routes){
                 for (const roleAccess of results){
                     if(roleAccess.routes.includes(requiredRoles[0])){
@@ -37,7 +38,7 @@ export class RolesGuard implements CanActivate {
                     }
                 }
             }
-
+            console.log(4)
             return false
         }catch (e){
             throw  new HttpException({message: e}, HttpStatus.FORBIDDEN)

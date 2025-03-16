@@ -87,6 +87,7 @@ export class SpecialityController {
     @ApiResponse({ status: 400, description: 'Invalid request.' })
     @ApiBody({type: specialityDto})
     @Roles("DELETE /speciality/:id")
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Delete("/:id")
     async delete(@Param("id") id:number){
         if(Number(id) === undefined){

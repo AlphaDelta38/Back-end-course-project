@@ -88,7 +88,7 @@ export class DiagnosesController {
     @ApiOperation({ summary: 'Delete a diagnosis by ID' })
     @ApiResponse({ status: 200, description: 'Diagnosis deleted successfully.' })
     @ApiResponse({ status: 400, description: 'Invalid ID or request.' })
-    @Roles("POST /diagnoses/:id")
+    @Roles("DELETE /diagnoses/:id")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Delete("/:id")
     async delete(@Param('id') diagnosis_id: number) {
